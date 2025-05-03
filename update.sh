@@ -1,5 +1,5 @@
 #!/bin/bash
-git pull
-php artisan cache:clear
-php artisan config:clear
-php artisan view:clear
+git add .
+git commit -m "Update"
+git push
+
