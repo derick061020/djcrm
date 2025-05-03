@@ -1,0 +1,31 @@
+<svg viewBox="0 0 2200 1237" version="1.1" xmlns="http://www.w3.org/2000/svg">
+<defs>
+<clipPath id="c0_7"><path d="M-.2 1237.8V-.2H2200.3v1238Z"/></clipPath>
+<clipPath id="c1_7"><path d="M-.2 1237.8V594.3H2200.3v643.5Z"/></clipPath>
+<clipPath id="c2_7"><path d="M1398.9 371V182.3h3.2V371Z"/></clipPath>
+<clipPath id="c3_7"><path d="M1784.6 371V182.3h3.2V371Z"/></clipPath>
+<style>
+.g0_7{fill:#FFF;}
+.g1_7{fill:#1A1A1A;}
+.g2_7{fill:none;stroke:#F0F28F;stroke-width:2.291;stroke-miterlimit:10;}
+.g3_7{fill:none;stroke:#DCE200;stroke-width:11.458;stroke-miterlimit:10;}
+.g4_7{fill:#000;fill-opacity:0;}
+</style>
+</defs>
+<g clip-path="url(#c0_7)">
+<path d="M0 0H2200V1237.5H0V0Z" class="g0_7"/>
+<path d="M0 0H2200V1237.5H0V0Z" class="g1_7"/>
+</g>
+<image clip-path="url(#c1_7)" preserveAspectRatio="none" x="0" y="296" width="2200" height="1240" href="img/1.jpg"/>
+<g clip-path="url(#c2_7)" opacity="0.2">
+<path d="M1400.5 183.8V368.7" class="g2_7"/>
+</g>
+<g clip-path="url(#c3_7)" opacity="0.2">
+<path d="M1786.2 183.8V368.7" class="g2_7"/>
+</g>
+<path d="M123.8 90.5H342.6" class="g3_7"/>
+<path d="M123.8 96.3H342.6V84.8H123.8V96.3Z" class="g4_7"/>
+<path d="M1399.3 368.7h2.3V183.8h-2.3V368.7Z" class="g4_7"/>
+<path d="M1785.1 368.7h2.3V183.8h-2.3V368.7Z" class="g4_7"/>
+<path d="M0 1237.5H2200V594.7H0v642.8Z" class="g4_7"/>
+</svg>

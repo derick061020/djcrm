@@ -1,0 +1,16 @@
+<svg viewBox="0 0 2200 1237" version="1.1" xmlns="http://www.w3.org/2000/svg">
+<defs>
+<clipPath id="c0_1"><path d="M-.2 1237.8V-.2H2200.3v1238Z"/></clipPath>
+<style>
+.g0_1{fill:#FFF;}
+.g1_1{fill:#121614;}
+</style>
+</defs>
+<g clip-path="url(#c0_1)">
+<path d="M0 0H2200V1237.5H0V0Z" class="g0_1"/>
+<path d="M0 0H2200V1237.5H0V0Z" class="g1_1"/>
+<g opacity="0.6">
+<image preserveAspectRatio="none" x="0" y="-115" width="2200" height="1468" href="img/1.jpg"/>
+</g>
+</g>
+</svg>
