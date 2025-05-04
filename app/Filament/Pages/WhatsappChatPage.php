@@ -41,14 +41,16 @@ class WhatsappChatPage extends Page
     public function sendMessage()
     {
         if (empty($this->message)) {
+            $this->addError('message', 'El mensaje no puede estar vacío');
             return;
         }
+
+        $whatsappService = app(WhatsAppService::class);
         
         try {
-            $sent = $this->whatsappService->sendMessage($this->contactNumber, $this->message);
+            $response = $whatsappService->sendMessage($this->contactNumber, $this->message);
             
-            if ($sent) {
-                // Add the message to the local messages array for immediate display
+            if (isset($response['messages'][0]['id'])) {
                 $this->messages[] = [
                     'type' => 'system',
                     'message' => $this->message,
@@ -56,13 +58,11 @@ class WhatsappChatPage extends Page
                 ];
                 
                 $this->message = '';
-                $this->dispatch('messageAdded');
+                $this->emit('messageSent');
             } else {
-                // Handle send failure
-                $this->addError('message', 'No se pudo enviar el mensaje. Intenta de nuevo más tarde.');
+                $this->addError('message', 'Error al enviar el mensaje');
             }
         } catch (\Exception $e) {
-            Log::error('Error sending WhatsApp message: ' . $e->getMessage());
             $this->addError('message', 'Error al enviar el mensaje: ' . $e->getMessage());
         }
     }

@@ -17,7 +17,7 @@ class FormatosResource extends Resource
 {
     protected static ?string $model = Formatos::class;
 
-    protected static ?string $navigationGroup = 'Presupuesto';
+    protected static ?string $navigationGroup = 'Sistema';
 
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
 

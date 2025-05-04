@@ -36,9 +36,9 @@ use Illuminate\Database\Eloquent\SoftDeletingScope;
 class ClientesResource extends Resource
 {
     protected static ?string $model = Clientes::class;
-
+    protected static ?int $navigationSort = 2;
     protected static ?string $navigationIcon = 'heroicon-o-user-group';
-
+    
     public static function form(Form $form): Form
     {
         return $form
@@ -369,7 +369,7 @@ class ClientesResource extends Resource
                                 })
                                 ->hiddenOn('create'),
                             ])->extraAttributes(['class' => 'h-full']),
-                    ViewComponent::make('filament.pages.whatsapp-chat')->extraAttributes(['class' => 'h-full']),
+                    ViewComponent::make('forms.components.chat')->extraAttributes(['class' => 'h-full']),
                 ]),
 
                 Section::make('Seguimiento')

@@ -13,11 +13,11 @@ class CommandsPage extends Page
 
     public $selectedContact = 0;
 
-    protected static ?string $navigationGroup = 'Sistema';
     protected static ?string $navigationLabel = 'Mensajes';
     protected static ?string $title = 'Mensajes';
+    protected static ?int $navigationSort = 3;
     protected static ?string $description = 'Ejecuta comandos del sistema';
-    protected static ?string $navigationIcon = 'heroicon-o-chat-bubble-left-ellipsis';
+    protected static ?string $navigationIcon = 'heroicon-o-arrow-up-right';
 
     public function getTitle(): string
     {

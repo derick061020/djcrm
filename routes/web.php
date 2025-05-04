@@ -11,6 +11,9 @@ Route::get('/', function () {
 Route::get('/linkstorage', function () {
     Artisan::call('storage:link');
 });
+
+
+
 // Rutas para el presupuesto
 Route::get('/presupuesto/{cliente}/index.html', function(Clientes $cliente) {
     if ($cliente->formato_evento == 4) {

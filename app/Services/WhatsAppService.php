@@ -7,15 +7,51 @@ use Illuminate\Support\Facades\Log;
 
 class WhatsAppService
 {
-    protected $apiUrl;
-    protected $apiToken;
-    protected $phoneNumberId;
+    private string $baseUrl = 'https://graph.facebook.com/v22.0';
+    private string $phoneId = '656799494179884';
+    private string $accessToken;
 
     public function __construct()
     {
-        $this->apiUrl = config('services.whatsapp.api_url', 'https://graph.facebook.com/v18.0');
-        $this->apiToken = config('services.whatsapp.api_token');
-        $this->phoneNumberId = config('services.whatsapp.phone_number_id');
+        $this->accessToken = config('services.whatsapp.access_token');
+    }
+
+    /**
+     * Send a message to a contact
+     *
+     * @param string $to The contact's phone number
+     * @param string $message The message to send
+     * @return array Response from the API
+     */
+    public function sendMessage(string $to, string $message): array
+    {
+        try {
+            // Format phone number (remove any + prefix if present)
+            $to = ltrim($to, '+');
+            
+            $response = Http::withHeaders([
+                'Authorization' => 'Bearer ' . $this->accessToken,
+                'Content-Type' => 'application/json',
+            ])->post("{$this->baseUrl}/{$this->phoneId}/messages", [
+                'messaging_product' => 'whatsapp',
+                'to' => $to,
+                'type' => 'text',
+                'text' => [
+                    'body' => $message,
+                ],
+            ]);
+
+            if ($response->successful()) {
+                return $response->json();
+            }
+            
+            Log::error('WhatsApp API error when sending message: ' . $response->body());
+            return [];
+            
+        } catch (\Exception $e) {
+            Log::error('WhatsApp API exception when sending message: ' . $e->getMessage());
+            return [];
+        }
     }
 
     /**
@@ -32,10 +68,12 @@ class WhatsAppService
             
             // In a real implementation, you would make an API call to fetch messages
             // This is a placeholder for the actual API call
-            $response = Http::withToken($this->apiToken)
-                ->get("{$this->apiUrl}/{$this->phoneNumberId}/messages", [
-                    'phone_number' => $contactNumber,
-                ]);
+            $response = Http::withHeaders([
+                'Authorization' => 'Bearer ' . $this->accessToken,
+                'Content-Type' => 'application/json',
+            ])->get("{$this->baseUrl}/{$this->phoneId}/messages", [
+                'phone_number' => $contactNumber,
+            ]);
             
             if ($response->successful()) {
                 $messages = $this->formatMessages($response->json('data', []));
@@ -67,7 +105,7 @@ class WhatsAppService
         
         foreach ($apiMessages as $message) {
             $formattedMessages[] = [
-                'type' => $message['from'] === $this->phoneNumberId ? 'system' : 'user',
+                'type' => $message['from'] === $this->phoneId ? 'system' : 'user',
                 'message' => $message['text']['body'] ?? '',
                 'time' => \Carbon\Carbon::parse($message['timestamp'])->format('H:i'),
             ];
@@ -90,42 +128,5 @@ class WhatsAppService
                 'time' => now()->format('H:i'),
             ]
         ];
-    }
-    
-    /**
-     * Send a message to a contact
-     *
-     * @param string $contactNumber The contact's phone number
-     * @param string $message The message to send
-     * @return bool Whether the message was sent successfully
-     */
-    public function sendMessage(string $contactNumber, string $message): bool
-    {
-        try {
-            // Format phone number (remove any + prefix if present)
-            $contactNumber = ltrim($contactNumber, '+');
-            
-            $response = Http::withToken($this->apiToken)
-                ->post("{$this->apiUrl}/{$this->phoneNumberId}/messages", [
-                    'messaging_product' => 'whatsapp',
-                    'recipient_type' => 'individual',
-                    'to' => $contactNumber,
-                    'type' => 'text',
-                    'text' => [
-                        'body' => $message
-                    ]
-                ]);
-            
-            if ($response->successful()) {
-                return true;
-            }
-            
-            Log::error('WhatsApp API error when sending message: ' . $response->body());
-            return false;
-            
-        } catch (\Exception $e) {
-            Log::error('WhatsApp API exception when sending message: ' . $e->getMessage());
-            return false;
-        }
     }
 }

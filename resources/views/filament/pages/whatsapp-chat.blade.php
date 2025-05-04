@@ -1,9 +1,4 @@
 @php
-    function getFirstTwoWords($text) {
-        $words = explode(' ', $text);
-        return count($words) > 1 ? $words[0] . ' ' . $words[1] : $words[0];
-    }
-
     $contactNumber = $getRecord()->contacto;
     $contactName = $getRecord()->name;
 @endphp
