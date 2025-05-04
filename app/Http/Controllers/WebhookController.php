@@ -12,7 +12,7 @@ class WebhookController extends Controller
   public function webhook(){
     //TOQUEN QUE QUERRAMOS PONER 
     $token = 'HolaNovato';
-    file_put_contents("text.txt", $_GET);
+    file_put_contents("text.txt", json_encode($_GET));
     //RETO QUE RECIBIREMOS DE FACEBOOK
     $hub_challenge = isset($_GET['hub_challenge']) ? $_GET['hub_challenge'] : '';
     //TOQUEN DE VERIFICACION QUE RECIBIREMOS DE FACEBOOK
