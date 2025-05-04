@@ -3,45 +3,47 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Log;
 
 class WebhookController extends Controller
 {
-      /*
-  * VERIFICACION DEL WEBHOOK
-  */
-  public function webhook(){
-    //TOQUEN QUE QUERRAMOS PONER 
-    $token = 'HolaNovato';
-    file_put_contents("text.txt", json_encode($_GET));
-    //RETO QUE RECIBIREMOS DE FACEBOOK
-    $hub_challenge = isset($_GET['hub_challenge']) ? $_GET['hub_challenge'] : '';
-    //TOQUEN DE VERIFICACION QUE RECIBIREMOS DE FACEBOOK
-    $hub_verify_token = isset($_GET['hub_verify_token']) ? $_GET['hub_verify_token'] : '';
-    //SI EL TOKEN QUE GENERAMOS ES EL MISMO QUE NOS ENVIA FACEBOOK RETORNAMOS EL RETO PARA VALIDAR QUE SOMOS NOSOTROS
-    if ($token === $hub_verify_token) {
-        echo $hub_challenge;
-        exit;
+    private const WEBHOOK_VERIFY_TOKEN = 'HolaNovato';
+    private const GRAPH_API_TOKEN = 'EAAhcUrJGdZBoBOzMdYb9bxiSDhL8W11eegHtwgMzmdW57TS4AwPLgMj6b1wte4mPwV6UhPDZBL8soFkNZA7WKwy1quQGREBxEJlkoz5In1rak0wU6lbUna4Xomuk03jTjc0uuLm5FIglCd8cilwJGQZB13s9XCUrYZAZAoUIdRPoifoevQp7ZC6VzOmDvQJdhRkketBa26AqMcCWMyBcKa69smmVwcZD';
+    private const BUSINESS_PHONE_NUMBER_ID = '656799494179884';
+
+    public function webhook(Request $request)
+    {
+        $mode = $request->query('hub.mode');
+        $token = $request->query('hub.verify_token');
+        $challenge = $request->query('hub.challenge');
+
+        if ($mode === 'subscribe' && $token === self::WEBHOOK_VERIFY_TOKEN) {
+            return response($challenge, 200);
+        }
+
+        return response()->json(['error' => 'Invalid verification token'], 403);
     }
-  }
-  /*
-  * RECEPCION DE MENSAJES
-  */
-  public function recibe(){
-    //LEEMOS LOS DATOS ENVIADOS POR WHATSAPP
-    file_put_contents("text.txt", json_encode($_POST));
-    $respuesta = file_get_contents("php://input");
-    //echo file_put_contents("text.txt", "Hola");
-    //SI NO HAY DATOS NOS SALIMOS
-    if($respuesta==null){
-      exit;
+
+    public function recibe(Request $request)
+    {
+        try {
+            $data = $request->json()->all();
+            
+            if (isset($data['entry'][0]['changes'][0]['value']['messages'][0])) {
+                $message = $data['entry'][0]['changes'][0]['value']['messages'][0];
+                
+                if ($message['type'] === 'text') {
+
+                }
+            }
+
+            return response()->json(['status' => 'success'], 200);
+        } catch (\Exception $e) {
+            Log::error('Error processing webhook: ' . $e->getMessage());
+            return response()->json(['error' => 'Internal server error'], 500);
+        }
     }
-    //CONVERTIMOS EL JSON EN ARRAY DE PHP
-    $respuesta = json_decode($respuesta, true);
-    //EXTRAEMOS EL TELEFONO DEL ARRAY
-    $mensaje="Telefono:".$respuesta['entry'][0]['changes'][0]['value']['messages'][0]['from']."\n";
-    //EXTRAEMOS EL MENSAJE DEL ARRAY
-    $mensaje.="Mensaje:".$respuesta['entry'][0]['changes'][0]['value']['messages'][0]['text']['body'];
-    //GUARDAMOS EL MENSAJE Y LA RESPUESTA EN EL ARCHIVO text.txt
-    file_put_contents("text.txt", $mensaje);
-  }
+
+    
 }
