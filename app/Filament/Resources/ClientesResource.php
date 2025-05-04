@@ -13,12 +13,14 @@ use Filament\Forms\Components\Repeater;
 use Filament\Forms\Components\Actions;
 use Filament\Notifications\Actions\Action;
 use Filament\Forms\Components\Section;
+use Filament\Forms\Components\Grid;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Notifications\Notification;
 use Filament\Forms\Components\TimePicker;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\Toggle;
+use Filament\Forms\Components\View as ViewComponent;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
@@ -156,294 +158,292 @@ class ClientesResource extends Resource
                 ])->fullWidth()
                 ->hiddenOn('create'),
 
+                // Chat WhatsApp
+                Grid::make(3)->schema([
+                    Forms\Components\Tabs::make('Tabs')
+                        ->columnSpan(2)
+                        ->tabs([
+                            Forms\Components\Tabs\Tab::make('Información Básica')
+                                ->schema([
+                                    TextInput::make('nombre')
+                                        ->required()
+                                        ->maxLength(255)
+                                        ->label('Nombre del Cliente'),
+                                    TextInput::make('contacto')
+                                        ->required()
+                                        ->maxLength(20)
+                                        ->label('Número de Contacto')
+                                        ->placeholder('54 300 123 4567')
+                                        ->tel()
+                                        ->prefix('+'),
+                                    Select::make('tipo_evento')
+                                        ->required()
+                                        ->options([
+                                            'boda' => 'Boda',
+                                            'cumpleaños' => 'Cumpleaños',
+                                            'fiesta_corporativa' => 'Fiesta Corporativa',
+                                            'evento_privado' => 'Evento Privado',
+                                            'otro' => 'Otro'
+                                        ])
+                                        ->label('Tipo de Evento'),
+                                    DatePicker::make('fecha_estimada')
+                                        ->required()
+                                        ->label('Fecha Estimada del Evento'),
+                                    TextInput::make('cantidad_personas')
+                                        ->required()
+                                        ->numeric()
+                                        ->label('Cantidad de Personas'),
+                                ])
+                                ->visible(function (?Clientes $record) {
+                                    return true; // Siempre visible
+                                }),
+                            Forms\Components\Tabs\Tab::make('Detalles del Evento')
+                                ->schema([
+                                    Textarea::make('ubicacion_local')
+                                        ->required()
+                                        ->columnSpanFull()
+                                        ->label('Ubicación del Local'),
+                                    TextInput::make('requerimientos')
+                                        ->required()
+                                        ->label('Requerimientos Específicos'),
+                                    TextInput::make('referencias_musicales')
+                                        ->required()
+                                        ->label('Referencias Musicales'),
+                                    TimePicker::make('hora_inicio')
+                                        ->required()
+                                        ->label('Hora de Inicio'),
+                                    TimePicker::make('hora_fin')
+                                        ->required()
+                                        ->label('Hora de Fin'),
+                                ])
+                                ->columns(2)
+                                ->visible(function (?Clientes $record) {
+                                    return true; // Siempre visible
+                                }),
+                            Forms\Components\Tabs\Tab::make('Panel del Operador')
+                                ->schema([
+                                    Textarea::make('observaciones_operador')
+                                        ->label('Observaciones del Operador')
+                                        ->columnSpanFull(),
+                                    Select::make('formato_evento')
+                                        ->label('Formato Seleccionado')
+                                        ->options(Formatos::all()->pluck('name', 'id'))
+                                        ->searchable()
+                                        ->live()
+                                        ->columnSpanFull(),
+                                ])
+                                ->columns(2)
+                                ->hiddenOn('create')
+                                ->visible(function (Clientes $record) {
+                                    return !auth()->user()->hasRole('data_manager');
+                                }),
+                            Forms\Components\Tabs\Tab::make('Presupuesto')
+                                ->schema([
+                                    Toggle::make('iva_incluido')
+                                        ->label('Incluir IVA (21%)')
+                                        ->default(true)
+                                        ->required(),
+                                    Forms\Components\Repeater::make('budget_items')
+                                        ->label('Items del Presupuesto')
+                                        ->columns(5)
+                                        ->itemLabel(fn (array $state): ?string => $state['service'] ?? null)
+                                        ->schema([
+                                            Forms\Components\TextInput::make('service')
+                                                ->label('Servicio')
+                                                ->required()
+                                                ->live(onBlur: true)
+                                                ->maxLength(255)->columnSpan(2),
+                                            Forms\Components\TextInput::make('unit')
+                                                ->label('Unidad')
+                                                ->required()
+                                                ->numeric()
+                                                ->minValue(1)
+                                                ->maxLength(50)
+                                                ->live(debounce: 500)
+                                                ->afterStateUpdated(function (Forms\Set $set, Forms\Get $get,  $state) {
+                                                    $unitPrice = $get('unit_price') ?? 0;
+                                                    $set('total', $state * $unitPrice);
+                                                }),
+                                            Forms\Components\TextInput::make('unit_price')
+                                                ->label('P.U.')
+                                                ->required()
+                                                ->numeric()
+                                                ->minValue(0)
+                                                ->prefix('$')
+                                                ->live(debounce: 500)
+                                                ->afterStateUpdated(function (Forms\Set $set, Forms\Get $get,  $state) {
+                                                    $unit = $get('unit') ?? 1;
+                                                    $set('total', $unit * $state);
+                                                }),
+                                            Forms\Components\TextInput::make('total')
+                                                ->label('Total')
+                                                ->numeric()
+                                                ->prefix('$'),
+                                            Forms\Components\Repeater::make('descripciones')
+                                                ->label('Descripciones')
+                                                ->schema([
+                                                    Forms\Components\Textarea::make('descripcion')
+                                                        ->label('Descripción')
+                                                        ->required()
+                                                        ->columnSpanFull(),
+                                                ])
+                                                ->defaultItems(1)
+                                                ->columnSpanFull(),
+                                        ])->collapsed()->default([
+                                            [
+                                                'service'=> 'Servicio de DJ por hora', 
+                                                'unit' => 1, 
+                                                'unit_price'=> 33 , 
+                                                'total' => 33,
+                                                'descripciones' => [
+                                                    ['descripcion' => 'Servicio de DJ profesional con 2 horas de música en vivo']
+                                                ]
+                                            ],
+                                            [
+                                                'service' => 'Sistema de sonido profesional',
+                                                'descripciones' => [
+                                                    ['descripcion' => 'Equipo de sonido completo con parlantes y subwoofers']
+                                                ]
+                                            ],
+                                            [
+                                                'service' => 'Cabina de DJ y mesa de mezclas',
+                                                'descripciones' => [
+                                                    ['descripcion' => 'Cabina de DJ profesional con mesa de mezclas y controlador']
+                                                ]
+                                            ],
+                                            [
+                                                'service'=> 'Servicio de logística y montaje de equipo',
+                                                'descripciones' => [
+                                                    ['descripcion' => 'Montaje y desmontaje del equipo de sonido y DJ']
+                                                ]
+                                            ]
+                                        ])
+                                        ->columnSpanFull(),
+                                ])
+                                ->visible(function (Clientes $record) {
+                                    return $record->estado && !auth()->user()->hasRole('data_manager') && !auth()->user()->hasRole('event_manager');
+                                })
+                                ->hiddenOn('create'),
+                            Forms\Components\Tabs\Tab::make('Estado del Presupuesto')
+                                ->schema([
+                                    Forms\Components\TextInput::make('budget_link')
+                                        ->label('Enlace del Presupuesto')
+                                        ->disabled()
+                                        ->hiddenOn('create')
+                                        ->formatStateUsing(fn(?Clientes $record) => $record && $record->id ? url(route('presupuesto.index', str_pad($record->id, 5, '0', STR_PAD_LEFT))) : null)
+                                        ->suffixActions([
+                                            Forms\Components\Actions\Action::make('copy')
+                                                ->icon('heroicon-s-clipboard-document-check')
+                                                ->action(function ($livewire, $state) {
+                                                    $livewire->js(
+                                                        'window.navigator.clipboard.writeText("'.$state.'");
+                                                        $tooltip("'.__('Copied to clipboard').'", { timeout: 1500 });'
+                                                    );
+                                                }),
+                                            Forms\Components\Actions\Action::make('open')
+                                                ->icon('heroicon-o-link')
+                                                ->action(function ($livewire, $state) {
+                                                    $livewire->js(
+                                                        'window.open("'.$state.'");'
+                                                    );
+                                                }),
+                                        ]),
+                                    Toggle::make('contract_accepted')
+                                        ->label('Presupuesto Aceptado')
+                                        ->helperText('Indica si el cliente ha aceptado el presupuesto')
+                                        ->disabled(),
+                                    DatePicker::make('contract_accepted_at')
+                                        ->label('Fecha de Aceptación')
+                                        ->disabled(),
+                                    Toggle::make('alternative_requested')
+                                        ->label('Alternativa Solicitada')
+                                        ->helperText('Indica si el cliente ha solicitado una alternativa')
+                                        ->disabled(),
+                                    DatePicker::make('alternative_requested_at')
+                                        ->label('Fecha de Solicitud de Alternativa')
+                                        ->disabled(),
+                                ])
+                                ->columnSpanFull()
+                                ->visible(function (Clientes $record) {
+                                    return $record->estado && !auth()->user()->hasRole('sales_operator') && !auth()->user()->hasRole('event_manager');
+                                })
+                                ->hiddenOn('create'),
+                            ])->extraAttributes(['class' => 'h-full']),
+                    ViewComponent::make('filament.pages.whatsapp-chat')->extraAttributes(['class' => 'h-full']),
+                ]),
+
                 Section::make('Seguimiento')
                     ->hiddenOn('create')
-                    ->schema([
-                        Forms\Components\Repeater::make('seguimiento')
-                            ->label('Llamadas Realizadas')
-                            ->schema([
-                                Forms\Components\DateTimePicker::make('fecha_hora')
-                                    ->label('Fecha/Hora')
-                                    ->required(),
-                                Forms\Components\Select::make('tipo')
-                                    ->label('Tipo de Llamada')
-                                    ->options([
-                                        'inicial' => 'Contacto Inicial',
-                                        'followup_1' => 'Primer Follow-up',
-                                        'followup_2' => 'Segundo Follow-up'
-                                    ])
-                                    ->required()
-                                    ->disabled()
-                                    ->formatStateUsing(function (?Clientes $record, $state) {
-                                        if (isset($state['fecha_hora'])) {
-                                            $fechaHora = \Carbon\Carbon::parse($state['fecha_hora']);
-                                            
-                                            // Si es la primera llamada
-                                            if (!$record->seguimiento || !isset($record->seguimiento['llamadas'])) {
-                                                return 'inicial';
-                                            }
-                                            
-                                            $ultimaLlamada = collect($record->seguimiento['llamadas'])->sortBy('fecha_hora')->last();
-                                            if ($ultimaLlamada) {
-                                                $ultimaFecha = \Carbon\Carbon::parse($ultimaLlamada['fecha_hora']);
-                                                
-                                                // Si es el primer follow-up (3 días después)
-                                                if ($ultimaLlamada['tipo'] === 'inicial' && $fechaHora->diffInDays($ultimaFecha) >= 3) {
-                                                    return 'followup_1';
-                                                }
-                                                
-                                                // Si es el segundo follow-up (72 horas después del primer follow-up)
-                                                if ($ultimaLlamada['tipo'] === 'followup_1' && $fechaHora->diffInHours($ultimaFecha) >= 72) {
-                                                    return 'followup_2';
-                                                }
-                                            }
-                                        }
-                                        return 'inicial';
-                                    }),
-                                Forms\Components\Textarea::make('observaciones')
-                                    ->label('Observaciones')
-                                    ->columnSpanFull(),
-                                Forms\Components\Toggle::make('concretada')
-                                    ->label('Contratación Concretada')
-                                    ->helperText('Marcar si la contratación se concretó en esta llamada')
-                                    ->live()
-                                    ->afterStateUpdated(function (Forms\Set $set, Forms\Get $get,  $state, Clientes $record) {
-                                        if ($state) {
-                                            $record->update([
-                                                'contract_accepted' => 1,
-                                                'contract_accepted_at' => now(),
-                                            ]);
-                                        }else {
-                                            $record->update([
-                                                'contract_accepted' => 0,
-                                                'contract_accepted_at' => null,
-                                            ]);
-                                        }
-                                    }),
-                            ])
-                            ->defaultItems(1)
-                            ->columnSpanFull(),
-                    ])
-                    ->visible(function (Clientes $record) {
-                        return $record->estado && !auth()->user()->hasRole('data_manager') && !auth()->user()->hasRole('event_manager');
-                    }),
-                    Section::make('Presupuesto')
-                    ->schema([
-                        Toggle::make('iva_incluido')
-                            ->label('Incluir IVA (21%)')
-                            ->default(true)
-                            ->required(),
-                        Forms\Components\Repeater::make('budget_items')
-                            ->label('Items del Presupuesto')
-                            ->schema([
-                                Forms\Components\TextInput::make('service')
-                                    ->label('Servicio')
-                                    ->required()
-                                    ->maxLength(255),
-                                Forms\Components\TextInput::make('unit')
-                                    ->label('Unidad')
-                                    ->required()
-                                    ->numeric()
-                                    ->minValue(1)
-                                    ->maxLength(50)
-                                    ->live(debounce: 500)
-                                    ->afterStateUpdated(function (Forms\Set $set, Forms\Get $get,  $state) {
-                                        $unitPrice = $get('unit_price') ?? 0;
-                                        $set('total', $state * $unitPrice);
-                                    }),
-                                Forms\Components\TextInput::make('unit_price')
-                                    ->label('Importe Unitario')
-                                    ->required()
-                                    ->numeric()
-                                    ->minValue(0)
-                                    ->prefix('$')
-                                    ->live(debounce: 500)
-                                    ->afterStateUpdated(function (Forms\Set $set, Forms\Get $get,  $state) {
-                                        $unit = $get('unit') ?? 1;
-                                        $set('total', $unit * $state);
-                                    }),
-                                Forms\Components\TextInput::make('total')
-                                    ->label('Total')
-                                    ->numeric()
-                                    ->prefix('$'),
-                                Forms\Components\Repeater::make('descripciones')
-                                    ->label('Descripciones')
-                                    ->schema([
-                                        Forms\Components\Textarea::make('descripcion')
-                                            ->label('Descripción')
-                                            ->required()
-                                            ->columnSpanFull(),
-                                    ])
-                                    ->defaultItems(1)
-                                    ->columnSpanFull(),
-                            ])->default([
-                                [
-                                    'service'=> 'Servicio de DJ por hora', 
-                                    'unit' => 1, 
-                                    'unit_price'=> 33 , 
-                                    'total' => 33,
-                                    'descripciones' => [
-                                        ['descripcion' => 'Servicio de DJ profesional con 2 horas de música en vivo']
-                                    ]
-                                ],
-                                [
-                                    'service' => 'Sistema de sonido profesional',
-                                    'descripciones' => [
-                                        ['descripcion' => 'Equipo de sonido completo con parlantes y subwoofers']
-                                    ]
-                                ],
-                                [
-                                    'service' => 'Cabina de DJ y mesa de mezclas',
-                                    'descripciones' => [
-                                        ['descripcion' => 'Cabina de DJ profesional con mesa de mezclas y controlador']
-                                    ]
-                                ],
-                                [
-                                    'service'=> 'Servicio de logística y montaje de equipo',
-                                    'descripciones' => [
-                                        ['descripcion' => 'Montaje y desmontaje del equipo de sonido y DJ']
-                                    ]
-                                ]
-                            ])
-                            ->columnSpanFull(),
-                    ])
-                    ->visible(function (Clientes $record) {
-                        return $record->estado && !auth()->user()->hasRole('data_manager') && !auth()->user()->hasRole('event_manager');
-                    })
-                    ->hiddenOn('create'),
-                Section::make('Estado del Presupuesto')
-                    ->schema([
-                        Forms\Components\TextInput::make('budget_link')
-                            ->label('Enlace del Presupuesto')
-                            ->disabled()
-                            ->hiddenOn('create')
-                            ->formatStateUsing(fn(?Clientes $record) => $record && $record->id ? url(route('presupuesto.index', str_pad($record->id, 5, '0', STR_PAD_LEFT))) : null)
-                            ->suffixActions([
-                                Forms\Components\Actions\Action::make('copy')
-                                    ->icon('heroicon-s-clipboard-document-check')
-                                    ->action(function ($livewire, $state) {
-                                        $livewire->js(
-                                            'window.navigator.clipboard.writeText("'.$state.'");
-                                            $tooltip("'.__('Copied to clipboard').'", { timeout: 1500 });'
-                                        );
-                                    }),
-                                Forms\Components\Actions\Action::make('open')
-                                    ->icon('heroicon-o-link')
-                                    ->action(function ($livewire, $state) {
-                                        $livewire->js(
-                                            'window.open("'.$state.'");'
-                                        );
-                                    }),
-                            ]),
-                        Toggle::make('contract_accepted')
-                            ->label('Presupuesto Aceptado')
-                            ->helperText('Indica si el cliente ha aceptado el presupuesto')
-                            ->disabled(),
-                        DatePicker::make('contract_accepted_at')
-                            ->label('Fecha de Aceptación')
-                            ->disabled(),
-                        Toggle::make('alternative_requested')
-                            ->label('Alternativa Solicitada')
-                            ->helperText('Indica si el cliente ha solicitado una alternativa')
-                            ->disabled(),
-                        DatePicker::make('alternative_requested_at')
-                            ->label('Fecha de Solicitud de Alternativa')
-                            ->disabled(),
-                    ])
-                    ->columnSpanFull()
-                    ->visible(function (Clientes $record) {
-                        return $record->estado && !auth()->user()->hasRole('sales_operator') && !auth()->user()->hasRole('event_manager');
-                    })
-                    ->hiddenOn('create'),
-                
-                Section::make('Información Básica')
-                    ->schema([
-                        TextInput::make('nombre')
-                            ->required()
-                            ->maxLength(255)
-                            ->label('Nombre del Cliente'),
-                        TextInput::make('contacto')
-                            ->required()
-                            ->maxLength(20)
-                            ->label('Número de Contacto')
-                            ->placeholder('54 300 123 4567')
-                            ->tel()
-                            ->prefix('+'),
-                        Select::make('tipo_evento')
-                            ->required()
-                            ->options([
-                                'boda' => 'Boda',
-                                'cumpleaños' => 'Cumpleaños',
-                                'fiesta_corporativa' => 'Fiesta Corporativa',
-                                'evento_privado' => 'Evento Privado',
-                                'otro' => 'Otro'
-                            ])
-                            ->label('Tipo de Evento'),
-                        DatePicker::make('fecha_estimada')
-                            ->required()
-                            ->label('Fecha Estimada del Evento'),
-                        TextInput::make('cantidad_personas')
-                            ->required()
-                            ->numeric()
-                            ->label('Cantidad de Personas'),
-                    ])
-                    ->visible(function (?Clientes $record) {
-                        return true; // Siempre visible
-                    }),
-                Section::make('Detalles del Evento')
-                    ->schema([
-                        Textarea::make('ubicacion_local')
-                            ->required()
-                            ->columnSpanFull()
-                            ->label('Ubicación del Local'),
-                        Repeater::make('requerimientos')
-                            ->label('Requerimientos Específicos')
-                            ->required()
-                            ->schema([
-                                TextInput::make('nombre')
-                                    ->required()
-                                    ->label('Requerimiento'),
-                            ])
-                            ->defaultItems(1)
-                            ->columnSpanFull(),
-                        Repeater::make('referencias_musicales')
-                            ->label('Referencias Musicales')
-                            ->schema([
-                                TextInput::make('referencia')
-                                    ->required()
-                                    ->label('Referencia Musical'),
-                            ])
-                            ->defaultItems(1)
-                            ->columnSpanFull(),
-                        TimePicker::make('hora_inicio')
-                            ->required()
-                            ->label('Hora de Inicio'),
-                        TimePicker::make('hora_fin')
-                            ->required()
-                            ->label('Hora de Fin'),
-                    ])
-                    ->columns(2)
-                    ->visible(function (?Clientes $record) {
-                        return true; // Siempre visible
-                    }),
-                    Section::make('Panel del Operador')
-                    ->schema([
-                        Textarea::make('observaciones_operador')
-                            ->label('Observaciones del Operador')
-                            ->columnSpanFull(),
-                        Select::make('formato_evento')
-                            ->label('Formato Seleccionado')
-                            ->options(Formatos::all()->pluck('name', 'id'))
-                            ->searchable()
-                            ->live()
-                            ->columnSpanFull(),
-                    ])
-                    ->columns(2)
-                    ->hiddenOn('create')
-                    ->visible(function (Clientes $record) {
-                        return !auth()->user()->hasRole('data_manager');
-                    }),
-                ])
+                                ->schema([
+                                    Forms\Components\Repeater::make('seguimiento')
+                                        ->label('Llamadas Realizadas')
+                                        ->schema([
+                                            Forms\Components\DateTimePicker::make('fecha_hora')
+                                                ->label('Fecha/Hora')
+                                                ->required(),
+                                            Forms\Components\Select::make('tipo')
+                                                ->label('Tipo de Llamada')
+                                                ->options([
+                                                    'inicial' => 'Contacto Inicial',
+                                                    'followup_1' => 'Primer Follow-up',
+                                                    'followup_2' => 'Segundo Follow-up'
+                                                ])
+                                                ->required()
+                                                ->disabled()
+                                                ->formatStateUsing(function (?Clientes $record, $state) {
+                                                    if (isset($state['fecha_hora'])) {
+                                                        $fechaHora = \Carbon\Carbon::parse($state['fecha_hora']);
+                                                        
+                                                        // Si es la primera llamada
+                                                        if (!$record->seguimiento || !isset($record->seguimiento['llamadas'])) {
+                                                            return 'inicial';
+                                                        }
+                                                        
+                                                        $ultimaLlamada = collect($record->seguimiento['llamadas'])->sortBy('fecha_hora')->last();
+                                                        if ($ultimaLlamada) {
+                                                            $ultimaFecha = \Carbon\Carbon::parse($ultimaLlamada['fecha_hora']);
+                                                            
+                                                            // Si es el primer follow-up (3 días después)
+                                                            if ($ultimaLlamada['tipo'] === 'inicial' && $fechaHora->diffInDays($ultimaFecha) >= 3) {
+                                                                return 'followup_1';
+                                                            }
+                                                            
+                                                            // Si es el segundo follow-up (72 horas después del primer follow-up)
+                                                            if ($ultimaLlamada['tipo'] === 'followup_1' && $fechaHora->diffInHours($ultimaFecha) >= 72) {
+                                                                return 'followup_2';
+                                                            }
+                                                        }
+                                                    }
+                                                    return 'inicial';
+                                                }),
+                                            Forms\Components\Textarea::make('observaciones')
+                                                ->label('Observaciones')
+                                                ->columnSpanFull(),
+                                            Forms\Components\Toggle::make('concretada')
+                                                ->label('Contratación Concretada')
+                                                ->helperText('Marcar si la contratación se concretó en esta llamada')
+                                                ->live()
+                                                ->afterStateUpdated(function (Forms\Set $set, Forms\Get $get,  $state, Clientes $record) {
+                                                    if ($state) {
+                                                        $record->update([
+                                                            'contract_accepted' => 1,
+                                                            'contract_accepted_at' => now(),
+                                                        ]);
+                                                    }else {
+                                                        $record->update([
+                                                            'contract_accepted' => 0,
+                                                            'contract_accepted_at' => null,
+                                                        ]);
+                                                    }
+                                                }),
+                                        ])
+                                        ->defaultItems(1)
+                                        ->columnSpanFull(),
+                                ])
+                                ->visible(function (Clientes $record) {
+                                    return $record->estado && !auth()->user()->hasRole('data_manager') && !auth()->user()->hasRole('event_manager');
+                                }),
+                           ])
             ->columns(2);
     }
 

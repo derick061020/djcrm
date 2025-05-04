@@ -16,8 +16,6 @@ class Clientes extends Model
     protected $casts = [
         'fecha_estimada' => 'datetime',
         'horas_trabajo' => 'array',
-        'requerimientos' => 'array',
-        'referencias_musicales' => 'array',
         'aprobado' => 'boolean',
         'hora_inicio' => 'string',
         'hora_fin' => 'string',

@@ -27,7 +27,7 @@ class WhatsappChatPage extends Page
     
     public function mount()
     {
-        $record = $this->getLivewire()->get('record');
+        $record = $getRecord();
         $this->contactNumber = $record->contacto;
         $this->contactName = $record->name;
         

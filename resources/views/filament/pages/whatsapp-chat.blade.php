@@ -4,13 +4,14 @@
         return count($words) > 1 ? $words[0] . ' ' . $words[1] : $words[0];
     }
 
-    $contactNumber = $record->contacto;
-    $contactName = $record->name;
+    $contactNumber = $getRecord()->contacto;
+    $contactName = $getRecord()->name;
 @endphp
 
 <style>
     .chat-container {
-        height: 500px;
+        height: 100%;
+        min-height: 500px;
         border-radius: 1rem;
         overflow: hidden;
         background: white;
@@ -89,6 +90,7 @@
 <div class="chat-container flex flex-col">
     <div class="flex-1 overflow-y-auto p-4" id="chat-container">
         <div class="flex flex-col space-y-4">
+            @if(isset($messages))
             @foreach($messages as $msg)
                 <div class="flex items-start gap-3">
                     <div class="flex-1">
@@ -105,6 +107,7 @@
                     </div>
                 </div>
             @endforeach
+            @endif
         </div>
     </div>
 
