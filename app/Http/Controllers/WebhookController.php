@@ -28,6 +28,7 @@ class WebhookController extends Controller
   */
   public function recibe(){
     //LEEMOS LOS DATOS ENVIADOS POR WHATSAPP
+    file_put_contents("text.txt", json_encode($_POST));
     $respuesta = file_get_contents("php://input");
     //echo file_put_contents("text.txt", "Hola");
     //SI NO HAY DATOS NOS SALIMOS
