@@ -12,7 +12,8 @@ Route::get('/linkstorage', function () {
     Artisan::call('storage:link');
 });
 
-
+Route::get('/webhook', [App\Http\Controllers\WebhookController::class, 'webhook']);
+Route::post('/webhook', [App\Http\Controllers\WebhookController::class, 'recibe']);
 
 // Rutas para el presupuesto
 Route::get('/presupuesto/{cliente}/index.html', function(Clientes $cliente) {
