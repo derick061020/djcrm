@@ -456,9 +456,9 @@ class ClientesResource extends Resource
                 TextColumn::make('nombre')
                     ->label('Nombre')
                     ->searchable(),
-                TextColumn::make('contacto')
-                    ->label('Contacto')
-                    ->searchable(),
+                // TextColumn::make('contacto')
+                //     ->label('Contacto')
+                //     ->searchable(),
                 TextColumn::make('tipo_evento')
                     ->label('Tipo de Evento')
                     ->searchable()
@@ -467,54 +467,54 @@ class ClientesResource extends Resource
                     ->label('Fecha Estimada')
                     ->dateTime()
                     ->sortable(),
-                TextColumn::make('cantidad_personas')
-                    ->label('Personas')
-                    ->numeric()
-                    ->sortable(),
+                // TextColumn::make('cantidad_personas')
+                //     ->label('Personas')
+                //     ->numeric()
+                //     ->sortable(),
                 IconColumn::make('estado')
                     ->label('Estado')
                     ->boolean()
                     ->sortable()
                     ->color('success'),
-                TextColumn::make('agendado_por.name')
-                    ->label('Agendado por')
-                    ->sortable()
-                    ->hidden(function () {
-                        return auth()->user()->hasRole('sales_operator');
-                    }),
-                TextColumn::make('agendado_at')
-                    ->label('Fecha de Agenda')
-                    ->dateTime()
-                    ->sortable()
-                    ->hidden(function () {
-                        return auth()->user()->hasRole('sales_operator');
-                    }),
-                TextColumn::make('aprobado_por.name')
-                    ->label('Aprobado por')
-                    ->sortable()
-                    ->hidden(function () {
-                        return auth()->user()->hasRole('sales_operator');
-                    }),
-                TextColumn::make('aprobado_at')
-                    ->label('Fecha de Aprobación')
-                    ->dateTime()
-                    ->sortable()
-                    ->hidden(function () {
-                        return auth()->user()->hasRole('sales_operator');
-                    }),
-                TextColumn::make('dj_asignado_por.name')
-                    ->label('DJ Asignado por')
-                    ->sortable()
-                    ->hidden(function () {
-                        return auth()->user()->hasRole('sales_operator');
-                    }),
-                TextColumn::make('dj_asignado_at')
-                    ->label('Fecha de Asignación')
-                    ->dateTime()
-                    ->sortable()
-                    ->hidden(function () {
-                        return auth()->user()->hasRole('sales_operator');
-                    }),
+                // TextColumn::make('agendado_por.name')
+                //     ->label('Agendado por')
+                //     ->sortable()
+                //     ->hidden(function () {
+                //         return auth()->user()->hasRole('sales_operator');
+                //     }),
+                // TextColumn::make('agendado_at')
+                //     ->label('Fecha de Agenda')
+                //     ->dateTime()
+                //     ->sortable()
+                //     ->hidden(function () {
+                //         return auth()->user()->hasRole('sales_operator');
+                //     }),
+                // TextColumn::make('aprobado_por.name')
+                //     ->label('Aprobado por')
+                //     ->sortable()
+                //     ->hidden(function () {
+                //         return auth()->user()->hasRole('sales_operator');
+                //     }),
+                // TextColumn::make('aprobado_at')
+                //     ->label('Fecha de Aprobación')
+                //     ->dateTime()
+                //     ->sortable()
+                //     ->hidden(function () {
+                //         return auth()->user()->hasRole('sales_operator');
+                //     }),
+                // TextColumn::make('dj_asignado_por.name')
+                //     ->label('DJ Asignado')
+                //     ->sortable()
+                //     ->hidden(function () {
+                //         return auth()->user()->hasRole('sales_operator');
+                //     }),
+                // TextColumn::make('dj_asignado_at')
+                //     ->label('Fecha de Asignación')
+                //     ->dateTime()
+                //     ->sortable()
+                //     ->hidden(function () {
+                //         return auth()->user()->hasRole('sales_operator');
+                //     }),
             ])
             ->filters([
                 SelectFilter::make('tipo_evento')
