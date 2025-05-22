@@ -29,10 +29,16 @@
             min-width: 350px;
             flex: 0 0 auto;
             cursor: grab;
+            transition: border 0.2s ease;
+            border: 1px solid transparent;
         }
 
         .kanban-column:active {
             cursor: grabbing;
+        }
+
+        .kanban-column.dragover {
+            border: 2px dashed #6b7280;
         }
 
         .kanban-container {
@@ -116,18 +122,12 @@
             font-size: 0.75rem;
             margin-left: 0.5rem;
         }
-
-        .drop-indicator {
-            height: 2px;
-            border-top: 1px dashed gray;
-            margin: 10px 0;
-        }
     </style>
 
     <script>
-        document.addEventListener('DOMContentLoaded', function() {
+        // Función para inicializar los eventos de drag and drop
+        function initDragAndDrop() {
             let draggedItem = null;
-            let dropIndicator = null;
             let startX;
             let scrollLeft;
             let isDown = false;
@@ -181,10 +181,6 @@
                 item.addEventListener('dragend', function() {
                     this.classList.remove('dragging');
                     draggedItem = null;
-                    if (dropIndicator) {
-                        dropIndicator.remove();
-                        dropIndicator = null;
-                    }
                 });
             });
 
@@ -192,68 +188,17 @@
             document.querySelectorAll('.kanban-items').forEach(column => {
                 column.addEventListener('dragover', function(e) {
                     e.preventDefault();
-                    
-                    // Calculate where to insert the indicator
-                    const items = Array.from(this.children).filter(child => child.classList.contains('kanban-item'));
-                    const mouseY = e.clientY;
-                    const columnRect = this.getBoundingClientRect();
-                    
-                    // Find the item under the mouse
-                    let targetItem = null;
-                    let insertBefore = true;
-                    
-                    for (let i = 0; i < items.length; i++) {
-                        const item = items[i];
-                        const itemRect = item.getBoundingClientRect();
-                        const itemMiddle = itemRect.top + (itemRect.height / 2);
-                        
-                        if (mouseY < itemMiddle) {
-                            targetItem = item;
-                            insertBefore = true;
-                            break;
-                        } else if (mouseY < itemRect.bottom) {
-                            targetItem = item;
-                            insertBefore = false;
-                            break;
-                        }
-                    }
-
-                    if (!dropIndicator) {
-                        dropIndicator = document.createElement('div');
-                        dropIndicator.className = 'drop-indicator';
-                        
-                        if (targetItem) {
-                            if (insertBefore) {
-                                this.insertBefore(dropIndicator, targetItem);
-                            } else {
-                                this.insertBefore(dropIndicator, targetItem.nextSibling);
-                            }
-                        } else {
-                            this.appendChild(dropIndicator);
-                        }
-                    } else {
-                        if (targetItem) {
-                            if (insertBefore) {
-                                this.insertBefore(dropIndicator, targetItem);
-                            } else {
-                                this.insertBefore(dropIndicator, targetItem.nextSibling);
-                            }
-                        } else {
-                            this.appendChild(dropIndicator);
-                        }
-                    }
+                    this.closest('.kanban-column').classList.add('dragover');
                 });
 
                 column.addEventListener('dragleave', function(e) {
                     e.preventDefault();
-                    if (dropIndicator && !this.contains(e.relatedTarget)) {
-                        dropIndicator.remove();
-                        dropIndicator = null;
-                    }
+                    this.closest('.kanban-column').classList.remove('dragover');
                 });
 
                 column.addEventListener('drop', function(e) {
                     e.preventDefault();
+                    this.closest('.kanban-column').classList.remove('dragover');
                     
                     if (!draggedItem) return;
 
@@ -265,19 +210,21 @@
                     if (categoriaActual !== nuevaCategoria) {
                         @this.updateCategoria(idCliente, nuevaCategoria)
                             .then(() => {
-                                // El componente se actualizará automáticamente
+                                // Reasignar eventos después de la actualización
+                                initDragAndDrop();
                             })
                             .catch(error => {
                                 console.error('Error al actualizar la categoría:', error);
                             });
                     }
-
-                    if (dropIndicator) {
-                        dropIndicator.remove();
-                        dropIndicator = null;
-                    }
                 });
             });
-        });
+        }
+
+        // Inicializar cuando se carga la página
+        document.addEventListener('DOMContentLoaded', initDragAndDrop);
+
+        // Reasignar eventos después de cada actualización de Livewire
+        document.addEventListener('livewire:load', initDragAndDrop);
     </script>
 </x-filament::page>
