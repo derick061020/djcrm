@@ -27,6 +27,32 @@ class Clientes extends Model
     {
         return $this->belongsTo(User::class, 'agendado_por_id');
     }
+    public static function getCategorias(): array
+{
+    return [
+        'Pedir requisitos por llamada',
+        'Crear presupuesto',
+        'Presupuesto creado',
+        'Presupuesto Presentado',
+        'Primer follow up',
+        'Segundo follow up',
+        'Tercer follow up',
+        'Follow up correo',
+        'Eventos pospuestos'
+    ];
+}
+public function getCategoriaAttribute($value)
+{
+    return $value;
+}
+public function setCategoriaAttribute($value)
+{
+    $categorias = self::getCategorias();
+    if (!in_array($value, $categorias)) {
+        throw new \InvalidArgumentException('Categoría inválida');
+    }
+    $this->attributes['categoria'] = $value;
+}
 
     public function aprobadoPor()
     {

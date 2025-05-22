@@ -1,243 +1,27 @@
 <x-filament::page>
     <div class="kanban-container flex gap-4" style="width: 100%;">
-        <!-- Categories -->
-
-        <div class="kanban-column rounded-lg p-4" id="category2">
-            <h3 class="text-lg font-semibold mb-2">Pedir requisitos por llamada</h3>
+        @foreach ($categorias as $categoria)
+        <div class="kanban-column rounded-lg p-4" id="{{ Str::slug($categoria) }}">
+            <h3 class="text-lg font-semibold mb-2">{{ $categoria }}</h3>
             <div class="kanban-items space-y-2" style="height: 100%;">
-                <div class="kanban-item bg-gray-50 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-lg p-3 cursor-move" draggable="true" data-id="3">
-                    <div class="kanban-item-avatar">C3</div>
+            @foreach($clientes->where('categoria', $categoria) as $cliente)
+                <div class="kanban-item bg-gray-50 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-lg p-3 cursor-move" 
+                     draggable="true" 
+                     data-id="{{ $cliente->id }}" 
+                     data-categoria="{{ $cliente->categoria }}"
+                     wire:key="cliente-{{ $cliente->id }}">
+                    <div class="kanban-item-avatar">C{{ $cliente->id }}</div>
                     <div class="kanban-item-content">
-                        <div class="kanban-item-name">Cliente 3</div>
-                        <div class="kanban-item-id">Lead #0003</div>
-                        <div class="kanban-item-status">•</div>
-                    </div>
-                    <div class="kanban-item-date">01/01</div>
-                </div>
-                <div class="kanban-item bg-gray-50 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-lg p-3 cursor-move" draggable="true" data-id="3">
-                    <div class="kanban-item-avatar">C3</div>
-                    <div class="kanban-item-content">
-                        <div class="kanban-item-name">Cliente 3</div>
-                        <div class="kanban-item-id">Lead #0003</div>
-                        <div class="kanban-item-status">•</div>
-                    </div>
-                    <div class="kanban-item-date">01/01</div>
-                </div>
-                <div class="kanban-item bg-gray-50 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-lg p-3 cursor-move" draggable="true" data-id="3">
-                    <div class="kanban-item-avatar">C3</div>
-                    <div class="kanban-item-content">
-                        <div class="kanban-item-name">Cliente 3</div>
-                        <div class="kanban-item-id">Lead #0003</div>
-                        <div class="kanban-item-status">•</div>
-                    </div>
-                    <div class="kanban-item-date">01/01</div>
-                </div>
-                <div class="kanban-item bg-gray-50 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-lg p-3 cursor-move" draggable="true" data-id="3">
-                    <div class="kanban-item-avatar">C3</div>
-                    <div class="kanban-item-content">
-                        <div class="kanban-item-name">Cliente 3</div>
-                        <div class="kanban-item-id">Lead #0003</div>
-                        <div class="kanban-item-status">•</div>
-                    </div>
-                    <div class="kanban-item-date">01/01</div>
-                </div>
-            </div>
-        </div>
-
-        <div class="kanban-column rounded-lg p-4" id="category3">
-            <h3 class="text-lg font-semibold mb-2">Crear presupuesto</h3>
-            <div class="kanban-items space-y-2" style="height: 100%;">
-                <div class="kanban-item bg-gray-50 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-lg p-3 cursor-move" draggable="true" data-id="4">
-                    <div class="kanban-item-avatar">C4</div>
-                    <div class="kanban-item-content">
-                        <div class="kanban-item-name">Cliente 4</div>
-                        <div class="kanban-item-id">Lead #0004</div>
+                        <div class="kanban-item-name">{{ $cliente->nombre }}</div>
+                        <div class="kanban-item-id">Lead #{{ str_pad($cliente->id, 4, '0', STR_PAD_LEFT) }}</div>
                         <div class="kanban-item-price">$500 <span class="kanban-item-no-tasks">no hay tareas</span></div>
                     </div>
-                    <div class="kanban-item-date">01/01</div>
+                    <div class="kanban-item-date">{{ $cliente->created_at->format('d/m/Y') }}</div>
                 </div>
+            @endforeach
             </div>
         </div>
-
-        <div class="kanban-column rounded-lg p-4" id="category4">
-            <h3 class="text-lg font-semibold mb-2">Presupuesto creado</h3>
-            <div class="kanban-items space-y-2" style="height: 100%;">
-                <div class="kanban-item bg-gray-50 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-lg p-3 cursor-move" draggable="true" data-id="5">
-                    <div class="kanban-item-avatar">C5</div>
-                    <div class="kanban-item-content">
-                        <div class="kanban-item-name">Cliente 5</div>
-                        <div class="kanban-item-id">Lead #0005</div>
-                        <div class="kanban-item-status">•</div>
-                    </div>
-                    <div class="kanban-item-date">01/01</div>
-                </div>
-            </div>
-        </div>
-
-        <div class="kanban-column rounded-lg p-4" id="category5">
-            <h3 class="text-lg font-semibold mb-2">Presupuesto Presentado</h3>
-            <div class="kanban-items space-y-2" style="height: 100%;">
-                <div class="kanban-item bg-gray-50 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-lg p-3 cursor-move" draggable="true" data-id="6">
-                    <div class="kanban-item-avatar">C6</div>
-                    <div class="kanban-item-content">
-                        <div class="kanban-item-name">Cliente 6</div>
-                        <div class="kanban-item-id">Lead #0006</div>
-                        <div class="kanban-item-price">$600 <span class="kanban-item-no-tasks">no hay tareas</span></div>
-                    </div>
-                    <div class="kanban-item-date">01/01</div>
-                </div>
-            </div>
-        </div>
-
-        <div class="kanban-column rounded-lg p-4" id="category6">
-            <h3 class="text-lg font-semibold mb-2">Primer follow up</h3>
-            <div class="kanban-items space-y-2" style="height: 100%;">
-                <div class="kanban-item bg-gray-50 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-lg p-3 cursor-move" draggable="true" data-id="7">
-                    <div class="kanban-item-avatar">C7</div>
-                    <div class="kanban-item-content">
-                        <div class="kanban-item-name">Cliente 7</div>
-                        <div class="kanban-item-id">Lead #0007</div>
-                        <div class="kanban-item-status">•</div>
-                    </div>
-                    <div class="kanban-item-date">01/01</div>
-                </div>
-            </div>
-        </div>
-
-        <div class="kanban-column rounded-lg p-4" id="category7">
-            <h3 class="text-lg font-semibold mb-2">Segundo follow up</h3>
-            <div class="kanban-items space-y-2" style="height: 100%;">
-                <div class="kanban-item bg-gray-50 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-lg p-3 cursor-move" draggable="true" data-id="8">
-                    <div class="kanban-item-avatar">C8</div>
-                    <div class="kanban-item-content">
-                        <div class="kanban-item-name">Cliente 8</div>
-                        <div class="kanban-item-id">Lead #0008</div>
-                        <div class="kanban-item-price">$800 <span class="kanban-item-no-tasks">no hay tareas</span></div>
-                    </div>
-                    <div class="kanban-item-date">01/01</div>
-                </div>
-            </div>
-        </div>
-
-        <div class="kanban-column rounded-lg p-4" id="category8">
-            <h3 class="text-lg font-semibold mb-2">Tercer follow up</h3>
-            <div class="kanban-items space-y-2" style="height: 100%;">
-                <div class="kanban-item bg-gray-50 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-lg p-3 cursor-move" draggable="true" data-id="9">
-                    <div class="kanban-item-avatar">C9</div>
-                    <div class="kanban-item-content">
-                        <div class="kanban-item-name">Cliente 9</div>
-                        <div class="kanban-item-id">Lead #0009</div>
-                        <div class="kanban-item-status">•</div>
-                    </div>
-                    <div class="kanban-item-date">01/01</div>
-                </div>
-            </div>
-        </div>
-
-        <div class="kanban-column rounded-lg p-4" id="category9">
-            <h3 class="text-lg font-semibold mb-2">Follow up correo</h3>
-            <div class="kanban-items space-y-2" style="height: 100%;">
-                <div class="kanban-item bg-gray-50 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-lg p-3 cursor-move" draggable="true" data-id="10">
-                    <div class="kanban-item-avatar">C10</div>
-                    <div class="kanban-item-content">
-                        <div class="kanban-item-name">Cliente 10</div>
-                        <div class="kanban-item-id">Lead #0010</div>
-                        <div class="kanban-item-price">$1000 <span class="kanban-item-no-tasks">no hay tareas</span></div>
-                    </div>
-                    <div class="kanban-item-date">01/01</div>
-                </div>
-            </div>
-        </div>
-
-        <div class="kanban-column rounded-lg p-4" id="category10">
-            <h3 class="text-lg font-semibold mb-2">Negociación</h3>
-            <div class="kanban-items space-y-2" style="height: 100%;">
-                <div class="kanban-item bg-gray-50 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-lg p-3 cursor-move" draggable="true" data-id="11">
-                    <div class="kanban-item-avatar">C11</div>
-                    <div class="kanban-item-content">
-                        <div class="kanban-item-name">Cliente 11</div>
-                        <div class="kanban-item-id">Lead #0011</div>
-                        <div class="kanban-item-status">•</div>
-                    </div>
-                    <div class="kanban-item-date">01/01</div>
-                </div>
-            </div>
-        </div>
-
-        <div class="kanban-column rounded-lg p-4" id="category11">
-            <h3 class="text-lg font-semibold mb-2">Hot (casi cerrados)</h3>
-            <div class="kanban-items space-y-2" style="height: 100%;">
-                <div class="kanban-item bg-gray-50 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-lg p-3 cursor-move" draggable="true" data-id="12">
-                    <div class="kanban-item-avatar">C12</div>
-                    <div class="kanban-item-content">
-                        <div class="kanban-item-name">Cliente 12</div>
-                        <div class="kanban-item-id">Lead #0012</div>
-                        <div class="kanban-item-price">$1200 <span class="kanban-item-no-tasks">no hay tareas</span></div>
-                    </div>
-                    <div class="kanban-item-date">01/01</div>
-                </div>
-            </div>
-        </div>
-
-        <div class="kanban-column rounded-lg p-4" id="category12">
-            <h3 class="text-lg font-semibold mb-2">ANTIGUOS CLIENTES</h3>
-            <div class="kanban-items space-y-2" style="height: 100%;">
-                <div class="kanban-item bg-gray-50 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-lg p-3 cursor-move" draggable="true" data-id="13">
-                    <div class="kanban-item-avatar">C13</div>
-                    <div class="kanban-item-content">
-                        <div class="kanban-item-name">Cliente 13</div>
-                        <div class="kanban-item-id">Lead #0013</div>
-                        <div class="kanban-item-status">•</div>
-                    </div>
-                    <div class="kanban-item-date">01/01</div>
-                </div>
-            </div>
-        </div>
-
-        <div class="kanban-column rounded-lg p-4" id="category13">
-            <h3 class="text-lg font-semibold mb-2">Aceptado sin Reserva</h3>
-            <div class="kanban-items space-y-2" style="height: 100%;">
-                <div class="kanban-item bg-gray-50 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-lg p-3 cursor-move" draggable="true" data-id="14">
-                    <div class="kanban-item-avatar">C14</div>
-                    <div class="kanban-item-content">
-                        <div class="kanban-item-name">Cliente 14</div>
-                        <div class="kanban-item-id">Lead #0014</div>
-                        <div class="kanban-item-price">$1400 <span class="kanban-item-no-tasks">no hay tareas</span></div>
-                    </div>
-                    <div class="kanban-item-date">01/01</div>
-                </div>
-            </div>
-        </div>
-
-        <div class="kanban-column rounded-lg p-4" id="category14">
-            <h3 class="text-lg font-semibold mb-2">Proforma Reserva</h3>
-            <div class="kanban-items space-y-2" style="height: 100%;">
-                <div class="kanban-item bg-gray-50 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-lg p-3 cursor-move" draggable="true" data-id="15">
-                    <div class="kanban-item-avatar">C15</div>
-                    <div class="kanban-item-content">
-                        <div class="kanban-item-name">Cliente 15</div>
-                        <div class="kanban-item-id">Lead #0015</div>
-                        <div class="kanban-item-status">•</div>
-                    </div>
-                    <div class="kanban-item-date">01/01</div>
-                </div>
-            </div>
-        </div>
-
-        <div class="kanban-column rounded-lg p-4" id="category15">
-            <h3 class="text-lg font-semibold mb-2">Eventos pospuestos</h3>
-            <div class="kanban-items space-y-2" style="height: 100%;">
-                <div class="kanban-item bg-gray-50 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-lg p-3 cursor-move" draggable="true" data-id="16">
-                    <div class="kanban-item-avatar">C16</div>
-                    <div class="kanban-item-content">
-                        <div class="kanban-item-name">Cliente 16</div>
-                        <div class="kanban-item-id">Lead #0016</div>
-                        <div class="kanban-item-price">$1600 <span class="kanban-item-no-tasks">no hay tareas</span></div>
-                    </div>
-                    <div class="kanban-item-date">01/01</div>
-                </div>
-            </div>
-        </div>
+        @endforeach
     </div>
 
     <style>
@@ -470,48 +254,30 @@
 
                 column.addEventListener('drop', function(e) {
                     e.preventDefault();
+                    
+                    if (!draggedItem) return;
+
+                    const categoriaActual = draggedItem.dataset.categoria;
+                    const nuevaCategoria = this.closest('.kanban-column').querySelector('h3').textContent;
+                    const idCliente = draggedItem.dataset.id;
+
+                    // Solo actualizamos si la categoría es diferente
+                    if (categoriaActual !== nuevaCategoria) {
+                        @this.updateCategoria(idCliente, nuevaCategoria)
+                            .then(() => {
+                                // El componente se actualizará automáticamente
+                            })
+                            .catch(error => {
+                                console.error('Error al actualizar la categoría:', error);
+                            });
+                    }
+
                     if (dropIndicator) {
                         dropIndicator.remove();
                         dropIndicator = null;
                     }
-                    
-                    if (draggedItem) {
-                        const items = Array.from(this.children).filter(child => child.classList.contains('kanban-item'));
-                        const mouseY = e.clientY;
-                        
-                        let targetItem = null;
-                        let insertBefore = true;
-                        
-                        for (let i = 0; i < items.length; i++) {
-                            const item = items[i];
-                            const itemRect = item.getBoundingClientRect();
-                            const itemMiddle = itemRect.top + (itemRect.height / 2);
-                            
-                            if (mouseY < itemMiddle) {
-                                targetItem = item;
-                                insertBefore = true;
-                                break;
-                            } else if (mouseY < itemRect.bottom) {
-                                targetItem = item;
-                                insertBefore = false;
-                                break;
-                            }
-                        }
-
-                        if (targetItem) {
-                            if (insertBefore) {
-                                this.insertBefore(draggedItem, targetItem);
-                            } else {
-                                this.insertBefore(draggedItem, targetItem.nextSibling);
-                            }
-                        } else {
-                            this.appendChild(draggedItem);
-                        }
-                    }
                 });
             });
         });
-
-
     </script>
 </x-filament::page>
