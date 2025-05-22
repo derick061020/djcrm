@@ -10,10 +10,10 @@
                      data-id="{{ $cliente->id }}" 
                      data-categoria="{{ $cliente->categoria }}"
                      wire:key="cliente-{{ $cliente->id }}">
-                    <div class="kanban-item-avatar">C{{ $cliente->id }}</div>
+                     <a href="/crm/clientes/{{ $cliente->id }}/edit"><div class="kanban-item-avatar">C{{ $cliente->id }}</div></a>
                     <div class="kanban-item-content">
-                        <div class="kanban-item-name">{{ $cliente->nombre }}</div>
-                        <div class="kanban-item-id">Lead #{{ str_pad($cliente->id, 4, '0', STR_PAD_LEFT) }}</div>
+                        <div class="kanban-item-name"><a href="/crm/clientes/{{ $cliente->id }}/edit">{{ $cliente->nombre }}</a></div>
+                        <div class="kanban-item-id"><a href="/crm/clientes/{{ $cliente->id }}/edit">Lead #{{ str_pad($cliente->id, 4, '0', STR_PAD_LEFT) }}</a></div>
                         <div class="kanban-item-price">$500 <span class="kanban-item-no-tasks">no hay tareas</span></div>
                     </div>
                     <div class="kanban-item-date">{{ $cliente->created_at->format('d/m/Y') }}</div>
