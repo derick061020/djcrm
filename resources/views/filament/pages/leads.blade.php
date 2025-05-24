@@ -3,6 +3,7 @@
         @foreach ($categorias as $categoria)
         <div class="kanban-column rounded-lg p-4" id="{{ Str::slug($categoria) }}">
             <h3 class="text-lg font-semibold mb-2">{{ $categoria }}</h3>
+            <span class="text-xs text-gray-500 p-3">{{ $clientes->where('categoria', $categoria)->count() }} conversacion{{ $clientes->where('categoria', $categoria)->count() == 1 ? '' : 'es' }}</span>
             <div class="kanban-items space-y-2" style="height: 100%;">
             @foreach($clientes->where('categoria', $categoria) as $cliente)
                 <div class="kanban-item bg-gray-50 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-lg p-3 cursor-move" 
