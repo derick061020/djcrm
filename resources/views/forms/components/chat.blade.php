@@ -237,7 +237,7 @@ use App\Models\Whatsapp;
             }
         });
         // Auto-scroll cada 3 segundos
-        setInterval(@this.loadMessages(), 3000);
+        setInterval(@this.loadMessages(), 500);
 
 
         
