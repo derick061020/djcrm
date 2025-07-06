@@ -6,50 +6,10 @@ use App\Models\Whatsapp;
     $contactNumber = $getRecord()->contacto;
     $contactName = $getRecord()->name;
     $whatsapp = Whatsapp::where('numero' , $contactNumber)->first();
-    $messages = $whatsapp ? $whatsapp->mensajes : [];
-@endphp
-
-<script>
-document.addEventListener('DOMContentLoaded', function() {
-    const contactNumber = '{{ $contactNumber }}';
-    const chatContainer = document.querySelector('.chat-container');
-    
-    // Función para actualizar los mensajes
-    function updateMessages() {
-        fetch(`/api/messages?contactNumber=${contactNumber}`)
-            .then(response => response.json())
-            .then(data => {
-                if (data.success && data.messages) {
-                    // Actualizar los mensajes en el DOM
-                    const messagesHtml = data.messages.map(msg => {
-                        const bubbleClass = msg.tipo === 'enviado' ? 'user-bubble' : 'system-bubble';
-                        return `
-                            <div class="chat-bubble ${bubbleClass}">
-                                <p>${msg.mensaje}</p>
-                                <div class="message-time">${msg.fecha}</div>
-                            </div>
-                        `;
-                    }).join('');
-                    
-                    // Actualizar el contenido del chat
-                    chatContainer.innerHTML = messagesHtml;
-                    
-                    // Hacer que el chat se desplace automáticamente
-                    chatContainer.scrollTop = chatContainer.scrollHeight;
-                }
-            })
-            .catch(error => {
-                console.error('Error al actualizar mensajes:', error);
-            });
+    if (isset($whatsapp)) {
+        $messages = $whatsapp->mensajes;
     }
-    
-    // Actualizar mensajes inmediatamente al cargar la página
-    updateMessages();
-    
-    // Establecer un intervalo para actualizar cada 5 segundos
-    setInterval(updateMessages, 5000);
-});
-</script>
+@endphp
 
 <style>
     .chat-container {
@@ -276,6 +236,9 @@ document.addEventListener('DOMContentLoaded', function() {
                 @this.sendMessage();
             }
         });
+        // Auto-scroll cada 3 segundos
+        setInterval(@this.loadMessages(), 3000);
+
 
         
         

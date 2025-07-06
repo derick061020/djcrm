@@ -34,7 +34,7 @@ class EditClientes extends EditRecord
         );
         curl_setopt($curl, CURLOPT_HTTPHEADER, $headers);
 
-        
+
         $data = <<<DATA
             {
             "messaging_product": "whatsapp",    
@@ -96,5 +96,12 @@ class EditClientes extends EditRecord
         $this->message = '';
     }
 
+    public function loadMessages()
+    {
+        $whatsapp = Whatsapp::where('numero', $this->record->contacto)->first();
+        if ($whatsapp) {
+            $this->messages = $whatsapp->mensajes;
+        }
+    }
     
 }

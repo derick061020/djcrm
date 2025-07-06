@@ -8,9 +8,6 @@ Route::get('/', function () {
     return view('welcome');
 });
 
-// Ruta para obtener mensajes actualizados
-Route::get('/api/messages', [\App\Http\Controllers\MessagesController::class, 'getMessages'])->name('messages.get');
-
 Route::get('/linkstorage', function () {
     Artisan::call('storage:link');
 });
