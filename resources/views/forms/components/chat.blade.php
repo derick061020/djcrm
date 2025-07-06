@@ -239,7 +239,7 @@ use App\Models\Whatsapp;
         // Actualizar mensajes cada 3 segundos usando la función loadMessages
         setInterval(() => {
             @this.loadMessages();
-        }, 3000); // Cada 3 segundos
+        }, 500); // Cada 3 segundos
 
         // Asegurarse de que el scroll se actualice después de cualquier actualización de Livewire
         window.addEventListener('livewire:load', scrollToBottom);
