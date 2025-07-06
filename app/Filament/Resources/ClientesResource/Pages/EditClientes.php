@@ -30,7 +30,7 @@ class EditClientes extends EditRecord
 
         $headers = array(
             "Content-Type: application/json",
-            "Authorization: Bearer EAAU9Ie8FTL0BPMUbZAlu6ZBmdjwaXmloYwzF8kzKjRgdi2poH093Ha9t0NxCZCb4hQHFZAPUELNAq1dGmYf6wzganz4EnBBD8wkDZBGtHBTU5GgIWdJNyHj66krlvwlZARGo4uKLpJ6yl0ZC71Uue2qZCjF4SU0XTS8k4pZB5IuVpCVY5T363m4KZALJlFV3BnWcZCJerIlFObrLq7cSRrOBopG5lP7iwsfdYWsTzR8ZAjsl4GeDFs4ZD",
+            "Authorization: Bearer EAAU9Ie8FTL0BPNoV5BB8tbCA0uuEaJz5A1mlCi4Kz4CGV4dcRdiIJ4pZATwqEikMCmMxyraJNjuNHKtC6MAqjnLagEFtX4G11KeTfs8uyK1uLwAaM3Fy0ds6g2dtM5TdDYGVyMfHMyurnHWy0pUMaiI3YYihjO3fpqKBjQzTRZCpU2LXb7ycVatNA2jrYbdlm5TZBi0lDpcT6usODE9wKDZChqavYkJ1v6ClO2PTSpeEVZCYZD",
         );
         curl_setopt($curl, CURLOPT_HTTPHEADER, $headers);
 
@@ -96,11 +96,13 @@ class EditClientes extends EditRecord
         $this->message = '';
     }
 
+    public $mensajes = [];
+
     public function loadMessages()
     {
         $whatsapp = Whatsapp::where('numero', $this->record->contacto)->first();
         if ($whatsapp) {
-            $mensajes = $whatsapp->mensajes;
+            $this->mensajes = $whatsapp->mensajes;
         }
     }
     

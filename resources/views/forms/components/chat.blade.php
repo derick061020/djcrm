@@ -225,7 +225,6 @@ use App\Models\Whatsapp;
         }
         scrollToBottom();
 
-
         // Auto-scroll cuando se añade un nuevo mensaje
         window.addEventListener('messageAdded', scrollToBottom);
 
@@ -236,12 +235,12 @@ use App\Models\Whatsapp;
                 @this.sendMessage();
             }
         });
-        // Auto-scroll cada 3 segundos
-        setInterval(@this.loadMessages(), 500);
 
+        // Actualizar mensajes cada 3 segundos usando la función loadMessages
+        setInterval(() => {
+            @this.loadMessages();
+        }, 3000); // Cada 3 segundos
 
-        
-        
         // Asegurarse de que el scroll se actualice después de cualquier actualización de Livewire
         window.addEventListener('livewire:load', scrollToBottom);
         window.addEventListener('livewire:updated', scrollToBottom);
