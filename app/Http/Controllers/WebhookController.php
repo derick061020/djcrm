@@ -5,11 +5,12 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
+use App\Models\Whatsapp;
 
 class WebhookController extends Controller
 {
     private const WEBHOOK_VERIFY_TOKEN = 'HolaNovato';
-    private const GRAPH_API_TOKEN = 'EAAhcUrJGdZBoBOzMdYb9bxiSDhL8W11eegHtwgMzmdW57TS4AwPLgMj6b1wte4mPwV6UhPDZBL8soFkNZA7WKwy1quQGREBxEJlkoz5In1rak0wU6lbUna4Xomuk03jTjc0uuLm5FIglCd8cilwJGQZB13s9XCUrYZAZAoUIdRPoifoevQp7ZC6VzOmDvQJdhRkketBa26AqMcCWMyBcKa69smmVwcZD';
+    private const GRAPH_API_TOKEN = 'EAAU9Ie8FTL0BPMUbZAlu6ZBmdjwaXmloYwzF8kzKjRgdi2poH093Ha9t0NxCZCb4hQHFZAPUELNAq1dGmYf6wzganz4EnBBD8wkDZBGtHBTU5GgIWdJNyHj66krlvwlZARGo4uKLpJ6yl0ZC71Uue2qZCjF4SU0XTS8k4pZB5IuVpCVY5T363m4KZALJlFV3BnWcZCJerIlFObrLq7cSRrOBopG5lP7iwsfdYWsTzR8ZAjsl4GeDFs4ZD';
     private const BUSINESS_PHONE_NUMBER_ID = '656799494179884';
 
     
@@ -22,28 +23,52 @@ class WebhookController extends Controller
 
         // Check if the webhook request contains a message
         $message = $request->json('entry.0.changes.0.value.messages.0');
-        print($message);
-
-        // Check if the incoming message contains text
+        
         if ($message && $message['type'] === 'text') {
-            // Extract the business number to send the reply from it
-            $business_phone_number_id = $request->json('entry.0.changes.0.value.metadata.phone_number_id');
+            // Extraer información del mensaje
+            $from = $message['from'];
+            $body = $message['text']['body'];
+            $timestamp = $message['timestamp'];
+            
+            // Crear mensaje recibido
+            $mensaje = [
+                'mensaje' => $body,
+                'fecha' => date('Y-m-d H:i:s', $timestamp),
+                'tipo' => 'recibido',
+                'estado' => 'recibido'
+            ];
 
-            // Send a reply message
+            // Buscar o crear el registro
+            $whatsapp = Whatsapp::firstOrCreate(
+                ['numero' => $from],
+                ['mensajes' => []]
+            );
+
+            // Agregar el nuevo mensaje al array de mensajes
+            $mensajes = $whatsapp->mensajes;
+            $mensajes[] = $mensaje;
+            
+            // Actualizar el registro con los nuevos mensajes
+            $whatsapp->update([
+                'mensajes' => $mensajes
+            ]);
+
+            // Enviar respuesta automática
+            $business_phone_number_id = $request->json('entry.0.changes.0.value.metadata.phone_number_id');
             Http::withHeaders([
                 'Authorization' => 'Bearer ' . self::GRAPH_API_TOKEN,
             ])->post("https://graph.facebook.com/v22.0/{$business_phone_number_id}/messages",
                 [
                     'messaging_product' => 'whatsapp',
-                    'to' => $message['from'],
-                    'text' => ['body' => "Echo: " . $message['text']['body']],
+                    'to' => $from,
+                    'text' => ['body' => "Echo: " . $body],
                     'context' => [
                         'message_id' => $message['id']
                     ]
                 ]
             );
 
-            // Mark incoming message as read
+            // Marcar mensaje como leído
             Http::withHeaders([
                 'Authorization' => 'Bearer ' . self::GRAPH_API_TOKEN,
             ])->post("https://graph.facebook.com/v22.0/{$business_phone_number_id}/messages",[
