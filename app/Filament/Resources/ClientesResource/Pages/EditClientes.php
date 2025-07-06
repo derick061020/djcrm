@@ -100,7 +100,7 @@ class EditClientes extends EditRecord
     {
         $whatsapp = Whatsapp::where('numero', $this->record->contacto)->first();
         if ($whatsapp) {
-            $this->messages = $whatsapp->mensajes;
+            $mensajes = $whatsapp->mensajes;
         }
     }
     
