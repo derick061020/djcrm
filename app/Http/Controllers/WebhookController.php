@@ -53,20 +53,7 @@ class WebhookController extends Controller
                 'mensajes' => $mensajes
             ]);
 
-            // Enviar respuesta automática
-            $business_phone_number_id = $request->json('entry.0.changes.0.value.metadata.phone_number_id');
-            Http::withHeaders([
-                'Authorization' => 'Bearer ' . self::GRAPH_API_TOKEN,
-            ])->post("https://graph.facebook.com/v22.0/{$business_phone_number_id}/messages",
-                [
-                    'messaging_product' => 'whatsapp',
-                    'to' => $from,
-                    'text' => ['body' => "Echo: " . $body],
-                    'context' => [
-                        'message_id' => $message['id']
-                    ]
-                ]
-            );
+            
 
             // Marcar mensaje como leído
             Http::withHeaders([
