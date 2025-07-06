@@ -21,7 +21,7 @@ class EditClientes extends EditRecord
     }
     public function sendMessage()
     {
-        $url = "https://graph.facebook.com/v22.0/656799494179884/messages";
+        $url = "https://graph.facebook.com/v22.0/741797439008360/messages";
 
         $curl = curl_init($url);
         curl_setopt($curl, CURLOPT_URL, $url);
@@ -30,17 +30,18 @@ class EditClientes extends EditRecord
 
         $headers = array(
             "Content-Type: application/json",
-            "Authorization: Bearer EAAhcUrJGdZBoBOzMdYb9bxiSDhL8W11eegHtwgMzmdW57TS4AwPLgMj6b1wte4mPwV6UhPDZBL8soFkNZA7WKwy1quQGREBxEJlkoz5In1rak0wU6lbUna4Xomuk03jTjc0uuLm5FIglCd8cilwJGQZB13s9XCUrYZAZAoUIdRPoifoevQp7ZC6VzOmDvQJdhRkketBa26AqMcCWMyBcKa69smmVwcZD",
+            "Authorization: Bearer EAAU9Ie8FTL0BPMUbZAlu6ZBmdjwaXmloYwzF8kzKjRgdi2poH093Ha9t0NxCZCb4hQHFZAPUELNAq1dGmYf6wzganz4EnBBD8wkDZBGtHBTU5GgIWdJNyHj66krlvwlZARGo4uKLpJ6yl0ZC71Uue2qZCjF4SU0XTS8k4pZB5IuVpCVY5T363m4KZALJlFV3BnWcZCJerIlFObrLq7cSRrOBopG5lP7iwsfdYWsTzR8ZAjsl4GeDFs4ZD",
         );
         curl_setopt($curl, CURLOPT_HTTPHEADER, $headers);
 
         $data = <<<DATA
-        {
-            "messaging_product": "whatsapp",
+            {
+            "messaging_product": "whatsapp",    
             "recipient_type": "individual",
             "to": "{$this->record->contacto}",
             "type": "text",
-            "text" : {
+            "text": {
+                "preview_url": false,
                 "body": "{$this->message}"
             }
         }
@@ -83,7 +84,7 @@ class EditClientes extends EditRecord
             Notification::make()
             ->title('Enviado correctamente')
             ->success()
-            ->send();
+            ->send();   
         } else {
             Notification::make()
             ->title(json_decode($resp, true)['error']['message'])

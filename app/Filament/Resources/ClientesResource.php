@@ -155,6 +155,46 @@ class ClientesResource extends Resource
                         ->visible(function (Clientes $record) {
                             return $record->estado && $record->concretada && !$record->contract_accepted;
                         }),
+                    Actions\Action::make('updateCategory')
+            ->label('Cambiar Categoría')
+            ->icon('heroicon-o-tag')
+            ->button()
+            ->color('success')
+            ->modalHeading('Actualizar Categoría')
+            ->form([
+                Select::make('categoria')
+                    ->label('Seleccione la nueva categoría')
+                    ->options([
+                        'Pedir requisitos por llamada' => 'Pedir requisitos por llamada',
+                        'Crear presupuesto' => 'Crear presupuesto',
+                        'Presupuesto creado' => 'Presupuesto creado',
+                        'Presupuesto Presentado' => 'Presupuesto Presentado',
+                        'Primer follow up' => 'Primer follow up',
+                        'Segundo follow up' => 'Segundo follow up',
+                        'Tercer follow up' => 'Tercer follow up',
+                        'Follow up correo' => 'Follow up correo',
+                        'Eventos pospuestos' => 'Eventos pospuestos'
+                    ])
+                     ->default(fn ($record) => $record->categoria)
+                    ->required()
+            ])
+            ->action(function (array $data, $record) {
+                try {
+                    $record->categoria = $data['categoria'];
+                    $record->save();
+                    
+                    Notification::make()
+                        ->title('Categoría actualizada exitosamente')
+                        ->success()
+                        ->send();
+                        
+                } catch (\Exception $e) {
+                    Notification::make()
+                        ->title('Error al actualizar la categoría')
+                        ->danger()
+                        ->send();
+                }
+            }),
                 ])->fullWidth()
                 ->hiddenOn('create'),
 

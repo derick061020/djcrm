@@ -8,7 +8,7 @@ use Illuminate\Support\Facades\Log;
 class WhatsAppService
 {
     private string $baseUrl = 'https://graph.facebook.com/v22.0';
-    private string $phoneId = '656799494179884';
+    private string $phoneId = '741797439008360';
     private string $accessToken;
 
     public function __construct()
@@ -40,6 +40,7 @@ class WhatsAppService
                     'body' => $message,
                 ],
             ]);
+            
 
             if ($response->successful()) {
                 return $response->json();
