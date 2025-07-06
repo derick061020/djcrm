@@ -56,8 +56,9 @@ class WebhookController extends Controller
             Notification::make()
                                     ->title('Nuevo mensaje recibido')
                                     ->body("{$body}")
-                                    ->success();
-                                    
+                                    ->success()
+                                    ->send();
+
 
             // Marcar mensaje como leído
             Http::withHeaders([
