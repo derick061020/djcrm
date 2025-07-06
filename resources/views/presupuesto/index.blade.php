@@ -4,6 +4,8 @@
 <!-- v2.1.0 -->
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta charset="utf-8" />
+<meta name="csrf-token" content="{{ csrf_token() }}">
+
 <title></title>
 <style type="text/css">/* Layout Styles */ .page { display:block; position: relative; overflow: hidden; background-color: white; } .page[data-visible="true"].page[data-state="unloaded"]:after, .page[data-visible="true"].page[data-state="loading"]:after, .page[data-visible="true"].page[data-state="hidden"]:after { position: absolute; top: 50%; left: 50%; margin: -12px 0 0 -12px; border: 4px solid #bbb; border-top: 4px solid #3c9fe1; border-radius: 50%; width: 20px; height: 20px; animation: spin 1s linear infinite; content: ""; } .page-inner { transform-origin: top left; } @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } } #idrviewer { overflow: auto; line-height: 0; margin: 0; padding: 0; } #overlay { width: 100%; height: 100%; position: absolute; z-index: 10; visibility: hidden; } #overlay.panning { visibility: visible; cursor: grab; } #overlay.panning.mousedown { cursor: grabbing; } /* Highlight Style */ .highlight { background-color: #FFFF0088; } .highlight.selected { background-color: #FFA50088; } /* Presentation Layout */ .layout-presentation .page { visibility: hidden; position: absolute; } .layout-presentation .page.current { visibility: visible !important; z-index: 1; /* Fix selection in IE/Edge */ } /* Continuous Layout */ .layout-continuous .page { margin: 0 auto 10px; } .layout-continuous .page:last-child { margin: 0 auto 0; } /* Magazine Layout */ .layout-magazine .page { visibility: hidden; position: absolute; } .layout-magazine .page.current { visibility: visible !important; z-index: 1; /* Fix selection in IE/Edge */ } /* Slide Transition */ .layout-presentation.transition-slide .page { transition: opacity 0.2s, transform 0.4s; opacity: 0; visibility: visible !important; } .layout-presentation.transition-slide .page.current { visibility: visible !important; opacity: 1; } .layout-presentation.transition-slide .page.after { visibility: visible !important; transform: translateX(130%); transition-delay: 0.1s, 0s; } .layout-presentation.transition-slide .page.before { visibility: visible !important; transform: translateX(-130%); transition-delay: 0.1s, 0s; } .isR2L.layout-presentation.transition-slide .page.after { transform: translateX(-130%); } .isR2L.layout-presentation.transition-slide .page.before { transform: translateX(130%); } /* Fade Transition */ .layout-presentation.transition-fade .page { transition: visibility 0.5s, opacity 0.5s; opacity: 1; } .layout-presentation.transition-fade .page.prev, .layout-presentation.transition-fade .page.next { opacity: 0; z-index: 2; } /* Flip Transition */ .layout-presentation.transition-flip > div > div { transform-style: preserve-3d; perspective: 1000px; } .layout-presentation.transition-flip .page { transition: transform 0.5s; backface-visibility: hidden; } .layout-presentation.transition-flip .page.before { transform: rotateY(-180deg); } .layout-presentation.transition-flip .page.after { transform: rotateY(180deg); } .layout-presentation.transition-flip .next, .layout-presentation.transition-flip .prev { visibility: visible; } /* Throw Transition */ .layout-presentation.transition-throw .page { opacity: 0; transition: transform 0.5s, opacity 0.5s; transition-timing-function: ease-out; } .layout-presentation.transition-throw .page.current { visibility: visible !important; z-index: 3; opacity: 1; } .layout-presentation.transition-throw .page.prev { visibility: visible !important; opacity: 0; z-index: 4; } .layout-presentation.transition-throw .page.prev:nth-child(even) { transform: translate(100%, -100%) rotate(240deg); } .layout-presentation.transition-throw .page.prev:nth-child(odd) { transform: translate(-100%, -100%) rotate(-240deg); } .layout-presentation.transition-throw .page.next { visibility: visible !important; transform: none; opacity: 1; z-index: 2; } /* Magazine Transition */ .layout-magazine.transition-magazine > div > div { transform-style: preserve-3d; perspective: 3000px; } .layout-magazine.transition-magazine .page { backface-visibility: hidden; } :not(.isR2L).layout-magazine.transition-magazine .page:nth-child(odd), .isR2L.layout-magazine.transition-magazine .page:nth-child(even) { transform-origin: left top 0; } :not(.isR2L).layout-magazine.transition-magazine .page:nth-child(even), .isR2L.layout-magazine.transition-magazine .page:nth-child(odd) { transform-origin: right top 0; } .layout-magazine.transition-magazine .page.current, :not(.isR2L).layout-magazine.transition-magazine .page.prev:nth-child(even), :not(.isR2L).layout-magazine.transition-magazine .page.next:nth-child(odd), :not(.isR2L).layout-magazine.transition-magazine .page.before:nth-child(even), :not(.isR2L).layout-magazine.transition-magazine .page.after:nth-child(odd), .isR2L.layout-magazine.transition-magazine .page.next:nth-child(odd), .isR2L.layout-magazine.transition-magazine .page.prev:nth-child(even), .isR2L.layout-magazine.transition-magazine .page.after:nth-child(odd), .isR2L.layout-magazine.transition-magazine .page.before:nth-child(even) { transform: none !important; } :not(.isR2L).layout-magazine.transition-magazine .page.before:nth-child(odd), :not(.isR2L).layout-magazine.transition-magazine .page.prev:nth-child(odd), .isR2L.layout-magazine.transition-magazine .page.after:nth-child(even), .isR2L.layout-magazine.transition-magazine .page.next:nth-child(even) { transform: rotateY(-180deg); z-index: 3; } :not(.isR2L).layout-magazine.transition-magazine .page.after:nth-child(even), :not(.isR2L).layout-magazine.transition-magazine .page.next:nth-child(even), .isR2L.layout-magazine.transition-magazine .page.before:nth-child(odd), .isR2L.layout-magazine.transition-magazine .page.prev:nth-child(odd){ transform: rotateY(180deg); z-index: 3; } .layout-magazine.transition-magazine .page.prev, .layout-magazine.transition-magazine .page.next { /* Delay transitioning the visibility until after the transform duration (0.5s) */ transition: transform 0.5s, visibility 0s linear 0.5s; } .layout-magazine.transition-magazine .page.current { /* Transition the visibility immediately, and transform over 0.5s */ transition: visibility 0s, transform 0.5s; z-index: 2; } </style>
 <style type="text/css">#controls.hide { opacity: 0; } .btn { border: 0 none; height: 30px; padding: 0; width: 30px; background-color: transparent; display: inline-block; margin: 7px 5px 0; vertical-align: top; opacity: 0.6; cursor: pointer; color: #fff; fill: currentColor; } .btn:hover { opacity: 0.9; } .btn.disabled { opacity: 0.2; } #btnPage { color: white; font-family: Arial, sans-serif; width: 40px; opacity: 0.8; } .page { box-shadow: 1px 1px 4px rgba(0, 0, 0, 0.3); } #controls { background: rgba(50, 50, 50, 0.9) none repeat scroll 0 0; height: 44px; line-height: 44px; position: fixed; text-align: center; bottom: 50px; transition: 0.3s ease 0s; width: 230px; left: 50%; margin-left: -115px; box-shadow: 1px 1px 4px rgba(0, 0, 0, 0.5); border-radius: 2px; } #controls-left { display: inline-block; left: 0; position: absolute; } #controls-center { display: inline-block; } #controls-right { display: inline-block; right: 0; position: absolute; line-height: 34px; } #idrviewer { bottom: 0; left: 0; right: 0; position: absolute; top: 0; background: #666 none repeat scroll 0 0; } </style>
@@ -50,6 +52,105 @@
                 Deseo una Segunda Opción
             </button>
         </div>
+        <div id="analytics-container" style="display: none; position: fixed; bottom: 20px; right: 20px; background: rgba(255, 255, 255, 0.95); padding: 15px; border-radius: 5px; box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);">
+            <div id="analytics-data" style="display: flex; flex-direction: column; gap: 10px;">
+                <div class="analytics-item" style="display: flex; justify-content: space-between;">
+                    <span style="color: #5c684d; font-weight: bold;">Tiempo activo:</span>
+                    <span id="active-time" style="color: #4a543d; font-weight: bold;">00:00:00</span>
+                </div>
+                <div class="analytics-item" style="display: flex; justify-content: space-between;">
+                    <span style="color: #5c684d; font-weight: bold;">Scrolls:</span>
+                    <span id="scroll-count" style="color: #4a543d; font-weight: bold;">0</span>
+                </div>
+                <div class="analytics-item" style="display: flex; justify-content: space-between;">
+                    <span style="color: #5c684d; font-weight: bold;">Clicks:</span>
+                    <span id="click-count" style="color: #4a543d; font-weight: bold;">0</span>
+                </div>
+            </div>
+        </div>
+        <script>(()=>{
+            let analytics = {
+                sessionId: 'session_' + Math.random().toString(36).substr(2, 9),
+                startTime: Date.now(),
+                lastActivity: Date.now(),
+                activeTime: 0,
+                scrolls: 0,
+                clicks: 0,
+                messagesSent: 0,
+                messagesReceived: 0
+            };
+
+            // Función para actualizar el tiempo activo
+            function updateActiveTime() {
+                console.log('updateActiveTime');
+
+                const now = Date.now();
+                analytics.activeTime = Math.floor((now - analytics.startTime) / 1000);
+                document.getElementById('active-time').textContent = formatTime(analytics.activeTime);
+                sendAnalytics();
+            }
+
+            // Función para formatear el tiempo
+            function formatTime(seconds) {
+                const hours = Math.floor(seconds / 3600);
+                const minutes = Math.floor((seconds % 3600) / 60);
+                const secs = seconds % 60;
+                return `${pad(hours)}:${pad(minutes)}:${pad(secs)}`;
+            }
+
+            // Función para agregar ceros a números menores a 10
+            function pad(num) {
+                return num.toString().padStart(2, '0');
+            }
+
+            // Eventos para rastrear interacciones
+            document.addEventListener('scroll', () => {
+                analytics.scrolls++;
+                document.getElementById('scroll-count').textContent = analytics.scrolls;
+            });
+
+            document.addEventListener('click', () => {
+                analytics.clicks++;
+                document.getElementById('click-count').textContent = analytics.clicks;
+            });
+
+            // Actualizar el tiempo activo cada segundo
+            setInterval(updateActiveTime, 1000);
+
+            // Enviar datos de analíticas cuando se cierre la página
+            function sendAnalytics() {
+                const metrics = {
+                    duration: analytics.activeTime,
+                    scrolls: analytics.scrolls,
+                    clicks: analytics.clicks,
+                    messages_sent: analytics.messagesSent,
+                    messages_received: analytics.messagesReceived,
+                    timestamp: new Date().toISOString()
+                };
+
+                // Obtener el ID del cliente de la URL actual
+                const urlParams = new URLSearchParams(window.location.search);
+                const clientId = urlParams.get('cliente');
+
+                fetch(`/presupuesto/{{ $cliente->id }}/analytics`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
+                    },
+                    body: JSON.stringify({
+                        analytics: metrics
+                    })
+                });
+            }
+
+            // Mostrar contenedor de analíticas después de 5 segundos
+            setTimeout(() => {
+                document.getElementById('analytics-container').style.display = 'block';
+            }, 5000);
+        })();
+    </script>
+    </div>
         <div id="overlay" style="width: 100%; height: 100%; position: absolute; z-index: 1; visibility: hidden;"></div>
         <div id="overlay.panning" style="width: 100%; height: 100%; position: absolute; z-index: 1; visibility: hidden; cursor: grab;"></div>
         <div id="overlay.panning.mousedown" style="width: 100%; height: 100%; position: absolute; z-index: 1; visibility: hidden; cursor: grabbing;"></div>

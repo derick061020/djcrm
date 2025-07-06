@@ -21,6 +21,7 @@ class Clientes extends Model
         'hora_fin' => 'string',
         'budget_items' => 'json',
         'seguimiento' => 'json',
+        'analytics' => 'json',
     ];
 
     public function agendadoPor()

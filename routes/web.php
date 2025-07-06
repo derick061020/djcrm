@@ -16,6 +16,21 @@ Route::get('/webhook', [App\Http\Controllers\WebhookController::class, 'webhook'
 Route::post('/webhook', [App\Http\Controllers\WebhookController::class, 'recibe']);
 
 // Rutas para el presupuesto
+Route::post('/presupuesto/{cliente}/analytics', function(Clientes $cliente) {
+    $analytics = request()->input('analytics');
+    
+    // Agregar los nuevos analytics al array
+    
+    $currentAnalytics = $analytics;
+    
+    // Actualizar el registro del cliente
+    $cliente->update([
+        'analytics' => $currentAnalytics
+    ]);
+
+    return response()->json(['status' => 'success']);
+});
+
 Route::get('/presupuesto/{cliente}/index.html', function(Clientes $cliente) {
     if ($cliente->formato_evento == 4) {
         return redirect()->route('presupuestoCorporativo.index', ['cliente' => $cliente]);

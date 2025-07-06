@@ -402,6 +402,31 @@ class ClientesResource extends Resource
                                     DatePicker::make('alternative_requested_at')
                                         ->label('Fecha de Solicitud de Alternativa')
                                         ->disabled(),
+                                    Forms\Components\Section::make('Estadísticas de Interacción')
+                                        ->schema([
+                                            Forms\Components\Grid::make(3)
+                                                ->schema([
+                                                    Forms\Components\TextInput::make('analytics.duration')
+                                                        ->label('Tiempo Total en Presupuesto')
+                                                        ->disabled()
+                                                        ->columnSpan(1),
+                                                    Forms\Components\TextInput::make('analytics.scrolls')
+                                                        ->label('Número de Scrolls')
+                                                        ->disabled()
+                                                        ->columnSpan(1),
+                                                    Forms\Components\TextInput::make('analytics.clicks')
+                                                        ->label('Número de Clicks')
+                                                        ->disabled()
+                                                        ->columnSpan(1),
+                                                ]),
+                                            Forms\Components\TextInput::make('analytics.timestamp')
+                                                ->label('Última Visita')
+                                                ->disabled()
+                                                ->columnSpanFull()
+                                        ])
+                                        ->visible(function (Clientes $record) {
+                                            return $record->analytics && isset($record->analytics['duration']);
+                                        })
                                 ])
                                 ->columnSpanFull()
                                 ->visible(function (Clientes $record) {
