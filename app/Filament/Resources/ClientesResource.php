@@ -125,7 +125,7 @@ class ClientesResource extends Resource
                             ]);
 
                             // Find Carlos and notify him
-                            $user = \App\Models\User::where('name', 'Carlos')->first();
+                            $user = \App\Models\User::where('id', $data['dj_id'])->first();
                             if ($user) {
                                 Notification::make()
                                     ->title('Nuevo Trabajo Asignado')
