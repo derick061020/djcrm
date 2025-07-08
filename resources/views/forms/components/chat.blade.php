@@ -103,12 +103,30 @@ use App\Models\Whatsapp;
                 <div class="flex items-start gap-3">
                     <div class="flex-1">
                         <div class="chat-bubble {{ $msg['tipo'] === 'recibido' ? 'user-bubble' : 'system-bubble' }}">
-                            <div class="message-content mt-1">
-                                {{ $msg['mensaje'] }}
-                            </div>
-                            <span class="message-time">
-                                {{ \Carbon\Carbon::parse($msg['fecha'])->format('H:i') }}
-                            </span>
+                            @if(isset($msg['tipo_mensaje']) && $msg['tipo_mensaje'] === 'archivo')
+                                <div class="flex items-center space-x-2">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-purple-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z" />
+                                    </svg>
+                                    <div class="flex-1">
+                                        <div class="font-medium">{{ $msg['mensaje'] }}</div>
+                                        <div class="text-xs text-gray-500">{{ $msg['archivo']['tipo'] }}</div>
+                                        <div class="text-xs text-gray-500">{{ \Carbon\Carbon::parse($msg['fecha'])->format('H:i') }}</div>
+                                    </div>
+                                    <a href="{{ asset('storage/' . $msg['archivo']['path']) }}" target="_blank" class="text-purple-500 hover:text-purple-700">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                                            <path fill-rule="evenodd" d="M3 17a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zM6.293 6.707a1 1 0 010-1.414l3-3a1 1 0 011.414 0l3 3a1 1 0 01-1.414 1.414L11 5.414V13a1 1 0 11-2 0V5.414L7.707 6.707a1 1 0 01-1.414 0z" clip-rule="evenodd" />
+                                        </svg>
+                                    </a>
+                                </div>
+                            @else
+                                <div class="message-content mt-1">
+                                    {{ $msg['mensaje'] }}
+                                </div>
+                                <span class="message-time">
+                                    {{ \Carbon\Carbon::parse($msg['fecha'])->format('H:i') }}
+                                </span>
+                            @endif
                         </div>
                     </div>
                 </div>
@@ -121,6 +139,13 @@ use App\Models\Whatsapp;
 
         <div class="flex gap-2">
             
+            <input type="file" wire:model="file" id="fileInput" class="hidden">
+            <label for="fileInput" class="flex items-center space-x-2 px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 cursor-pointer">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-500" viewBox="0 0 20 20" fill="currentColor">
+                    <path fill-rule="evenodd" d="M3 17a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zM6.293 6.707a1 1 0 010-1.414l3-3a1 1 0 011.414 0l3 3a1 1 0 01-1.414 1.414L11 5.414V13a1 1 0 11-2 0V5.414L7.707 6.707a1 1 0 01-1.414 0z" clip-rule="evenodd" />
+                </svg>
+                <span class="text-sm text-gray-700">Archivo</span>
+            </label>
             <x-filament::input
                 wire:model.live="message"
                 placeholder="Escribe tu mensaje..."
