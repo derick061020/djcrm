@@ -28,6 +28,7 @@ class CrmPanelProvider extends PanelProvider
     {
         return $panel
             ->default()
+            ->brandLogo(asset('65165165165122(1).png'))
             ->id('crm')
             ->path('crm')
             ->login()
