@@ -15,7 +15,7 @@ class CommandsPage extends Page
 
     protected static ?string $navigationLabel = 'Mensajes';
     protected static ?string $title = 'Mensajes';
-    protected static ?int $navigationSort = 3;
+    protected static ?int $navigationSort = 2;
     protected static ?string $description = 'Ejecuta comandos del sistema';
     protected static ?string $navigationIcon = 'heroicon-o-arrow-up-right';
 

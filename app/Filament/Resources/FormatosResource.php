@@ -18,6 +18,8 @@ class FormatosResource extends Resource
     protected static ?string $model = Formatos::class;
 
     protected static ?string $navigationGroup = 'Sistema';
+    protected static ?string $navigationLabel = 'Plantillas';
+
 
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
 
