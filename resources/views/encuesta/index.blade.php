@@ -73,19 +73,44 @@
             display: flex;
             gap: 12px;
             justify-content: center;
+            margin: 0 auto;
+            width: 100%;
+            max-width: 300px;
+            padding: 12px 0;
         }
 
         .star {
             cursor: pointer;
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            transition: all 0.2s ease;
+        }
+
+        .star-icon {
+            color: #ccc;
             font-size: 24px;
             transition: color 0.2s ease;
         }
 
-        .star:hover {
-            color: var(--accent-color);
+        .star.selected {
+            background: var(--primary-color);
+            box-shadow: 0 4px 8px var(--shadow-color);
         }
 
-        .star.selected {
+        .star.selected .star-icon {
+            color: white;
+        }
+
+        .star:hover:not(.selected) {
+            background: rgba(74, 84, 61, 0.1);
+        }
+
+        .star:hover .star-icon {
             color: var(--accent-color);
         }
 
@@ -179,7 +204,9 @@
                 <label for="overall_satisfaction">1. Satisfacción General con el Servicio</label>
                 <div class="stars">
                     @for($i = 1; $i <= 5; $i++)
-                        <span class="star" data-rating="{{ $i }}">⭐</span>
+                        <span class="star" data-rating="{{ $i }}">
+                            <span class="star-icon">⭐</span>
+                        </span>
                     @endfor
                 </div>
                 <input type="hidden" name="overall_satisfaction" id="overall_satisfaction" value="{{ $cliente->overall_satisfaction ?? '' }}">
