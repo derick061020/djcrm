@@ -5,62 +5,165 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Encuesta de Satisfacción - {{ $cliente->nombre }}</title>
     <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 20px;
-            background-color: #f5f5f5;
+        :root {
+            --primary-color: #4a543d;
+            --primary-hover: #3a442d;
+            --accent-color: #ffd700;
+            --background-light: #f8f9fa;
+            --shadow-color: rgba(0, 0, 0, 0.1);
+            --text-primary: #333;
+            --text-secondary: #666;
         }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            margin: 0;
+            padding: 24px;
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            color: var(--text-primary);
+            line-height: 1.6;
+        }
+
         .container {
             max-width: 800px;
             margin: 0 auto;
-            background-color: white;
-            padding: 30px;
-            border-radius: 8px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            background: white;
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px var(--shadow-color);
+            transform: translateY(20px);
+            transition: transform 0.3s ease;
         }
+
+        .container:hover {
+            transform: translateY(0);
+        }
+
+        h1 {
+            color: var(--primary-color);
+            font-size: 2.5rem;
+            margin-bottom: 24px;
+            text-align: center;
+        }
+
+        p {
+            color: var(--text-secondary);
+            text-align: center;
+            margin-bottom: 40px;
+            font-size: 1.1rem;
+        }
+
         .question {
-            margin-bottom: 20px;
+            margin-bottom: 32px;
+            padding: 24px;
+            background: var(--background-light);
+            border-radius: 12px;
+            box-shadow: 0 4px 6px var(--shadow-color);
         }
+
         .question label {
             display: block;
-            margin-bottom: 10px;
-            font-weight: bold;
+            margin-bottom: 16px;
+            font-weight: 600;
+            color: var(--primary-color);
+            font-size: 1.1rem;
         }
+
         .stars {
             display: flex;
-            gap: 10px;
+            gap: 12px;
+            justify-content: center;
         }
+
         .star {
             cursor: pointer;
-            color: #ccc;
+            font-size: 24px;
+            transition: color 0.2s ease;
         }
+
+        .star:hover {
+            color: var(--accent-color);
+        }
+
         .star.selected {
-            color: #ffd700;
+            color: var(--accent-color);
         }
+
         .comments {
             margin-top: 20px;
         }
+
+        textarea {
+            width: 100%;
+            padding: 16px;
+            border: 2px solid var(--background-light);
+            border-radius: 8px;
+            font-family: inherit;
+            font-size: 1rem;
+            resize: vertical;
+            transition: all 0.2s ease;
+        }
+
+        textarea:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(74, 84, 61, 0.1);
+        }
+
         .submit-button {
-            background-color: #4CAF50;
+            display: block;
+            width: 100%;
+            padding: 16px;
+            background: var(--primary-color);
             color: white;
-            padding: 12px 24px;
             border: none;
-            border-radius: 4px;
+            border-radius: 8px;
+            font-size: 1.1rem;
+            font-weight: 600;
             cursor: pointer;
-            font-size: 16px;
-            margin-top: 20px;
+            transition: all 0.2s ease;
+            margin-top: 32px;
         }
+
         .submit-button:hover {
-            background-color: #45a049;
+            background: var(--primary-hover);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px var(--shadow-color);
         }
+
         .success-message {
             display: none;
-            background-color: #d4edda;
+            background: linear-gradient(135deg, #d4edda 0%, #c3e6cb 100%);
             color: #155724;
-            padding: 15px;
-            border-radius: 4px;
-            margin-bottom: 20px;
+            padding: 20px;
+            border-radius: 12px;
+            margin-bottom: 32px;
+            text-align: center;
+            font-weight: 500;
+        }
+
+        .success-message.show {
+            display: block;
+            animation: fadeIn 0.5s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 32px;
+            }
+
+            h1 {
+                font-size: 2rem;
+            }
+
+            .stars {
+                gap: 8px;
+            }
         }
     </style>
 </head>
