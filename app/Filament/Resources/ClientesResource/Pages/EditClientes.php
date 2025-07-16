@@ -13,11 +13,29 @@ class EditClientes extends EditRecord
     protected static string $resource = ClientesResource::class;
     public $message = '';
 
+    public $templates = [];
+    public $selectedTemplate = '';
+
     protected function getHeaderActions(): array
     {
         return [
             Actions\DeleteAction::make(),
         ];
+    }
+
+    public function updatedSelectedTemplate($value)
+    {
+        if ($value) {
+            $this->applyTemplate($value);
+        }
+    }
+
+    public function applyTemplate($templateId)
+    {
+        $template = \App\Models\WhatsappTemplate::find($templateId);
+        if ($template) {
+            $this->message = str_replace('{{ nombre }}', $this->record->nombre, $template->content);
+        }
     }
     public function sendMessage()
     {
@@ -104,6 +122,15 @@ class EditClientes extends EditRecord
         if ($whatsapp) {
             $this->mensajes = $whatsapp->mensajes;
         }
+        $this->templates = \App\Models\WhatsappTemplate::where('is_active', true)
+        ->get()
+        ->map(function($template) {
+            return [
+                'id' => $template->id,
+                'name' => $template->name,
+                'content' => $template->content
+            ];
+        });
     }
     
 }

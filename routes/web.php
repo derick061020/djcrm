@@ -52,6 +52,27 @@ Route::get('/presupuesto/{cliente}/2.html', function(Clientes $cliente) {
 })->name('presupuesto.page2')
 ->where('cliente', '[0-9]+');
 
+// Ruta para la encuesta
+Route::get('/encuesta/{cliente}', function(Clientes $cliente) {
+    return view('encuesta.index', compact('cliente'));
+})->name('encuesta.index')
+->where('cliente', '[0-9]+');
+
+Route::post('/encuesta/{cliente}', function(Clientes $cliente) {
+    $cliente->update(request()->only([
+        'overall_satisfaction',
+        'service_quality',
+        'product_quality',
+        'survey_comments',
+        'would_recommend',
+        'survey_completed_at'
+    ]));
+    
+    return redirect()->route('encuesta.index', $cliente)
+        ->with('success', '¡Encuesta guardada exitosamente!');
+})->name('encuesta.store')
+->where('cliente', '[0-9]+');
+
 Route::get('/presupuesto/{cliente}/3.html', function(Clientes $cliente) {
     $formato = Formatos::find($cliente->formato_evento);
     return view('presupuesto.3', compact('cliente', 'formato'));

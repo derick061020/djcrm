@@ -32,6 +32,7 @@ use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use App\Models\SatisfactionSurvey;
 
 class ClientesResource extends Resource
 {
@@ -277,6 +278,69 @@ class ClientesResource extends Resource
                                 ->visible(function (Clientes $record) {
                                     return !auth()->user()->hasRole('data_manager');
                                 }),
+                            Forms\Components\Tabs\Tab::make('Encuesta de Satisfacción')
+                                 ->schema([
+                                     Forms\Components\TextInput::make('survey_link')
+                                         ->label('Enlace de la Encuesta')
+                                         ->disabled()
+                                         ->hiddenOn('create')
+                                         ->formatStateUsing(function(?Clientes $record) {
+                                             return url(route('encuesta.index', $record->id));
+                                         })
+                                         ->suffixActions([
+                                             Forms\Components\Actions\Action::make('copy')
+                                                 ->icon('heroicon-s-clipboard-document-check')
+                                                 ->action(function ($livewire, $state) {
+                                                     $livewire->js(
+                                                         'window.navigator.clipboard.writeText("'.$state.'");
+                                                         $tooltip("'.__('Copied to clipboard').'", { timeout: 1500 });'
+                                                     );
+                                                 }),
+                                             Forms\Components\Actions\Action::make('open')
+                                                 ->icon('heroicon-o-link')
+                                                 ->action(function ($livewire, $state) {
+                                                     $livewire->js(
+                                                         'window.open("'.$state.'");'
+                                                     );
+                                                 }),
+                                         ]),
+                                     Forms\Components\TextInput::make('overall_satisfaction')
+                                         ->label('Satisfacción General')
+                                         ->disabled()
+                                         ->formatStateUsing(function(?Clientes $record) {
+                                             return $record->overall_satisfaction ? "⭐️ {$record->overall_satisfaction}/5" : null;
+                                         }),
+                                     Forms\Components\TextInput::make('service_quality')
+                                         ->label('Calidad del Servicio')
+                                         ->disabled()
+                                         ->formatStateUsing(function(?Clientes $record) {
+                                             return $record->service_quality ? "⭐️ {$record->service_quality}/5" : null;
+                                         }),
+                                     Forms\Components\TextInput::make('product_quality')
+                                         ->label('Calidad del Producto')
+                                         ->disabled()
+                                         ->formatStateUsing(function(?Clientes $record) {
+                                             return $record->product_quality ? "⭐️ {$record->product_quality}/5" : null;
+                                         }),
+                                     Forms\Components\Toggle::make('would_recommend')
+                                         ->label('¿Recomendaría nuestros servicios?')
+                                         ->disabled()
+                                         ->formatStateUsing(function(?Clientes $record) {
+                                             return $record->would_recommend ? 'Sí' : 'No';
+                                         }),
+                                     Forms\Components\Textarea::make('survey_comments')
+                                         ->label('Comentarios')
+                                         ->disabled()
+                                         ->columnSpanFull(),
+                                     Forms\Components\DateTimePicker::make('survey_completed_at')
+                                         ->label('Fecha de Completación')
+                                         ->disabled()
+                                         ->columnSpanFull(),
+                                 ])
+                                 ->visible(function (Clientes $record) {
+                                     return $record->estado && !auth()->user()->hasRole('data_manager') && !auth()->user()->hasRole('event_manager');
+                                 })
+                                 ->hiddenOn('create'),
                             Forms\Components\Tabs\Tab::make('Presupuesto')
                                 ->schema([
                                     Toggle::make('iva_incluido')

@@ -12,6 +12,26 @@ class Clientes extends Model
     
     protected $guarded = [];
 
+    protected $fillable = [
+        'nombre',
+        'contacto',
+        'tipo_evento',
+        'fecha_estimada',
+        'cantidad_personas',
+        'horas_trabajo',
+        'aprobado',
+        'hora_inicio',
+        'hora_fin',
+        'budget_items',
+        'seguimiento',
+        'analytics',
+        'overall_satisfaction',
+        'service_quality',
+        'product_quality',
+        'survey_comments',
+        'would_recommend',
+        'survey_completed_at'
+    ];
 
     protected $casts = [
         'fecha_estimada' => 'datetime',
@@ -22,11 +42,21 @@ class Clientes extends Model
         'budget_items' => 'json',
         'seguimiento' => 'json',
         'analytics' => 'json',
+        'overall_satisfaction' => 'integer',
+        'service_quality' => 'integer',
+        'product_quality' => 'integer',
+        'would_recommend' => 'boolean',
+        'survey_completed_at' => 'datetime',
     ];
 
     public function agendadoPor()
     {
         return $this->belongsTo(User::class, 'agendado_por_id');
+    }
+
+    public function satisfactionSurvey()
+    {
+        return $this->hasOne(SatisfactionSurvey::class);
     }
     public static function getCategorias(): array
 {

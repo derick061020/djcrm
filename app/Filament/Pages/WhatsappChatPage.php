@@ -19,10 +19,21 @@ class WhatsappChatPage extends Page
     protected static bool $shouldRegisterNavigation = false;
     protected $whatsappService;
     protected $messages = [];
+    public $templates = [];
+    public $selectedTemplate = '';
     
     public function boot()
     {
         $this->whatsappService = app(WhatsAppService::class);
+        $this->templates = \App\Models\WhatsappTemplate::where('is_active', true)
+            ->get()
+            ->map(function($template) {
+                return [
+                    'id' => $template->id,
+                    'name' => $template->name,
+                    'content' => $template->content
+                ];
+            });
     }
     
     public function mount()
@@ -78,6 +89,21 @@ class WhatsappChatPage extends Page
         } catch (\Exception $e) {
             Log::error('Error fetching WhatsApp messages: ' . $e->getMessage());
             $this->addError('messages', 'Error al cargar los mensajes: ' . $e->getMessage());
+        }
+    }
+
+    public function updatedSelectedTemplate($value)
+    {
+        if ($value) {
+            $this->applyTemplate($value);
+        }
+    }
+
+    public function applyTemplate($templateId)
+    {
+        $template = \App\Models\WhatsappTemplate::find($templateId);
+        if ($template) {
+            $this->message = str_replace('{{ nombre }}', $this->contactName, $template->content);
         }
     }
     

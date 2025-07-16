@@ -5,6 +5,7 @@
 use App\Models\Whatsapp;
     $contactNumber = $getRecord()->contacto;
     $contactName = $getRecord()->name;
+    $templates = $this->templates;
     $whatsapp = Whatsapp::where('numero' , $contactNumber)->first();
     if (isset($whatsapp)) {
         $messages = $whatsapp->mensajes;
@@ -135,8 +136,23 @@ use App\Models\Whatsapp;
         </div>
     </div>
 
-    <div class="sticky bottom-0 bg-white dark:bg-gray-800 p-4 border-t dark:border-gray-700">
+    <!-- Template Selector -->
+    <div class="p-4 border-t dark:border-gray-700">
+        <div class="mb-4">
+            <select wire:model="selectedTemplate" 
+                    class="w-full px-3 py-2 bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-700 rounded-md shadow-sm focus:border-blue-500 dark:focus:border-blue-500 focus:ring-1 focus:ring-blue-500 dark:focus:ring-blue-500">
+                <option value="" class="text-gray-500 dark:text-gray-400">Seleccionar plantilla</option>
+                @foreach($templates as $template)
+                    <option value="{{ $template['id'] }}" class="text-gray-900 dark:text-white bg-white dark:bg-gray-800">
+                        {{ $template['name'] }}
+                    </option>
+                @endforeach
+            </select>
+        </div>
+    </div>
 
+
+    <div class="sticky bottom-0 bg-white dark:bg-gray-800 p-4 border-t dark:border-gray-700">
         <div class="flex gap-2">
             
             <input type="file" wire:model="file" id="fileInput" class="hidden">
