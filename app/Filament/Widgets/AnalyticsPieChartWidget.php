@@ -61,12 +61,18 @@ class AnalyticsPieChartWidget extends ChartWidget
             ],
             'datasets' => [
                 [
-                    'data' => [
+                    'data' => $totalActions !== 0 ? [
                         ($totalDuration / $totalActions) * 100,
                         ($totalScrolls / $totalActions) * 100,
                         ($totalClicks / $totalActions) * 100,
                         ($totalMessagesSent / $totalActions) * 100,
                         ($totalMessagesReceived / $totalActions) * 100,
+                    ] : [
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
                     ],
                     'backgroundColor' => [
                         '#4F46E5', // Indigo
