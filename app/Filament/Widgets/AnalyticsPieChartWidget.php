@@ -72,7 +72,7 @@ class AnalyticsPieChartWidget extends ChartWidget
                         0,
                         0,
                         0,
-                        0,d
+                        0,
                     ],
                     'backgroundColor' => [
                         '#4F46E5', // Indigo
