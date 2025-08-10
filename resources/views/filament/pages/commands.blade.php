@@ -139,6 +139,9 @@
         color: rgba(156, 163, 175, 0.5);
     }
 
+    .max-w-4xl {
+        max-width: 70rem;
+    }
 
     /* Ajustes para modo oscuro */
     .dark .user-bubble {
@@ -193,10 +196,11 @@
 </style>
 
 <div class="flex flex-col items-center">
-    <div class="w-full max-w-4xl">
+    <div class="w-full max-w-6xl">
         <div class="bg-white dark:bg-gray-800 shadow rounded-lg" style="height: 580px;">
             <div class="flex" style="height: 580px;">
-                <div class="contact-list">
+                <!-- Lista de contactos (25% ancho) -->
+                <div class="contact-list w-1/4">
                     <div class="p-4" style="height: 570px;">
                         <h3 class="text-lg font-semibold mb-4">Conversaciones</h3>
                         <div class="overflow-y-auto space-y-0.5">
@@ -228,7 +232,9 @@
                         </div>
                     </div>
                 </div>
-                <div class="flex-1">
+                
+                <!-- Área de mensajes (50% ancho) -->
+                <div class="flex-1 w-2/4">
                     <div class="flex flex-col" style="height: 100%;">
                         <div class="flex flex-col" style="height: 500px;">
                             <div id="chat-container" class="overflow-y-auto p-4 space-y-4" style="height: 100%;">
@@ -269,7 +275,65 @@
                 </div>
             </div>
         </div>
+        
+        <!-- Panel de información del cliente (25% ancho) -->
+        <div class="client-info-panel w-1/4 border-l border-gray-200 dark:border-gray-700 p-4 overflow-y-auto">
+            @if($data['selected_client'])
+                <div class="bg-indigo-50 dark:bg-gray-700 rounded-lg p-4 mb-4">
+                    <h3 class="font-bold text-lg text-indigo-800 dark:text-indigo-200 mb-3 flex items-center gap-2">
+                        <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd" />
+                        </svg>
+                        Información del Cliente
+                    </h3>
+                    
+                    <div class="space-y-4 mt-3">
+                        <div class="bg-white dark:bg-gray-800 p-3 rounded-lg shadow-sm">
+                            <div class="font-medium text-indigo-600 dark:text-indigo-300 mb-1">Datos Básicos</div>
+                            <div class="grid grid-cols-1 gap-2">
+                                <div>
+                                    <div class="text-xs text-gray-500 dark:text-gray-400">Nombre Completo</div>
+                                    <div class="font-medium">{{ $data['selected_client']['nombre'] ?? 'N/A' }}</div>
+                                </div>
+                                <div>
+                                    <div class="text-xs text-gray-500 dark:text-gray-400">Contacto</div>
+                                    <div class="font-medium">{{ $data['selected_client']['contacto'] ?? 'N/A' }}</div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="bg-white dark:bg-gray-800 p-3 rounded-lg shadow-sm">
+                            <div class="font-medium text-indigo-600 dark:text-indigo-300 mb-1">Detalles del Evento</div>
+                            <div class="grid grid-cols-1 gap-2">
+                                <div>
+                                    <div class="text-xs text-gray-500 dark:text-gray-400">Tipo de Evento</div>
+                                    <div class="font-medium">{{ $data['selected_client']['tipo_evento'] ?? 'N/A' }}</div>
+                                </div>
+                                <div>
+                                    <div class="text-xs text-gray-500 dark:text-gray-400">Fecha Estimada</div>
+                                    <div class="font-medium text-sm">
+                                        @if(!empty($data['selected_client']['fecha_estimada']))
+                                            {{ \Carbon\Carbon::parse($data['selected_client']['fecha_estimada'])->locale('es')->isoFormat('dddd D [de] MMMM [a las] h:mmA') }}
+                                        @else
+                                            N/A
+                                        @endif
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            @else
+                <div class="text-center text-gray-500 dark:text-gray-400 mt-8 flex flex-col items-center">
+                    <svg class="w-10 h-10 mb-2 opacity-50" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                    </svg>
+                    Seleccione un contacto para ver la información
+                </div>
+            @endif
+        </div>
     </div>
+</div>
 </div>
 
 @push('scripts')
