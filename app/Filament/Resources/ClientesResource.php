@@ -324,10 +324,7 @@ class ClientesResource extends Resource
                                          }) ->hiddenOn('create'),
                                      Forms\Components\Toggle::make('would_recommend')
                                          ->label('¿Recomendaría nuestros servicios?')
-                                         ->disabled()
-                                         ->formatStateUsing(function(?Clientes $record) {
-                                             return $record ? ($record->would_recommend ? 'Sí' : 'No') : null;
-                                         })->hiddenOn('create'),
+                                         ->disabled()->hiddenOn('create'),
                                      Forms\Components\Textarea::make('survey_comments')
                                          ->label('Comentarios')
                                          ->disabled()
