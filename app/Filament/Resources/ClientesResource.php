@@ -202,7 +202,7 @@ class ClientesResource extends Resource
                 // Chat WhatsApp
                 Grid::make(3)->schema([
                     Forms\Components\Tabs::make('Tabs')
-                        ->columnSpan(2)
+                        ->columnSpan(fn (?Cliente $record): int => $record ? 2 : 3)
                         ->tabs([
                             Forms\Components\Tabs\Tab::make('Información Básica')
                                 ->schema([
@@ -285,7 +285,7 @@ class ClientesResource extends Resource
                                          ->disabled()
                                          ->hiddenOn('create')
                                          ->formatStateUsing(function(?Clientes $record) {
-                                             return url(route('encuesta.index', $record->id));
+                                             return $record ? url(route('encuesta.index', $record->id)) : null;
                                          })
                                          ->suffixActions([
                                              Forms\Components\Actions\Action::make('copy')
@@ -303,39 +303,39 @@ class ClientesResource extends Resource
                                                          'window.open("'.$state.'");'
                                                      );
                                                  }),
-                                         ]),
+                                         ])->hiddenOn('create'),
                                      Forms\Components\TextInput::make('overall_satisfaction')
                                          ->label('Satisfacción General')
                                          ->disabled()
                                          ->formatStateUsing(function(?Clientes $record) {
-                                             return $record->overall_satisfaction ? "⭐️ {$record->overall_satisfaction}/5" : null;
-                                         }),
+                                             return $record ? $record->overall_satisfaction ? "⭐️ {$record->overall_satisfaction}/5" : null : null;
+                                         })->hiddenOn('create'),
                                      Forms\Components\TextInput::make('service_quality')
                                          ->label('Calidad del Servicio')
                                          ->disabled()
                                          ->formatStateUsing(function(?Clientes $record) {
-                                             return $record->service_quality ? "⭐️ {$record->service_quality}/5" : null;
-                                         }),
+                                             return $record ? $record->service_quality ? "⭐️ {$record->service_quality}/5" : null : null;
+                                         })->hiddenOn('create'),
                                      Forms\Components\TextInput::make('product_quality')
                                          ->label('Calidad del Producto')
                                          ->disabled()
                                          ->formatStateUsing(function(?Clientes $record) {
-                                             return $record->product_quality ? "⭐️ {$record->product_quality}/5" : null;
-                                         }),
+                                             return $record ? $record->product_quality ? "⭐️ {$record->product_quality}/5" : null : null;
+                                         }) ->hiddenOn('create'),
                                      Forms\Components\Toggle::make('would_recommend')
                                          ->label('¿Recomendaría nuestros servicios?')
                                          ->disabled()
                                          ->formatStateUsing(function(?Clientes $record) {
-                                             return $record->would_recommend ? 'Sí' : 'No';
-                                         }),
+                                             return $record ? $record->would_recommend ? 'Sí' : 'No' : null;
+                                         })->hiddenOn('create'),
                                      Forms\Components\Textarea::make('survey_comments')
                                          ->label('Comentarios')
                                          ->disabled()
-                                         ->columnSpanFull(),
+                                         ->columnSpanFull()->hiddenOn('create'),
                                      Forms\Components\DateTimePicker::make('survey_completed_at')
                                          ->label('Fecha de Completación')
                                          ->disabled()
-                                         ->columnSpanFull(),
+                                         ->columnSpanFull()->hiddenOn('create'),
                                  ])
                                  ->visible(function (Clientes $record) {
                                      return $record->estado && !auth()->user()->hasRole('data_manager') && !auth()->user()->hasRole('event_manager');
@@ -498,7 +498,7 @@ class ClientesResource extends Resource
                                 })
                                 ->hiddenOn('create'),
                             ])->extraAttributes(['class' => 'h-full']),
-                    ViewComponent::make('forms.components.chat')->extraAttributes(['class' => 'h-full']),
+                    ViewComponent::make('forms.components.chat')->hiddenOn('create')->extraAttributes(['class' => 'h-full']),
                 ]),
 
                 Section::make('Seguimiento')
