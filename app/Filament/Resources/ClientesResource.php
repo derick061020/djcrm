@@ -202,7 +202,7 @@ class ClientesResource extends Resource
                 // Chat WhatsApp
                 Grid::make(3)->schema([
                     Forms\Components\Tabs::make('Tabs')
-                        ->columnSpan(fn (?Cliente $record): int => $record ? 2 : 3)
+                        ->columnSpan(fn (?Clientes $record): int => $record ? 2 : 3)
                         ->tabs([
                             Forms\Components\Tabs\Tab::make('Información Básica')
                                 ->schema([
