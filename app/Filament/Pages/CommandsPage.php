@@ -73,10 +73,20 @@ class CommandsPage extends Page
             ];
         }, $dbMessages);
 
+        $templates = \App\Models\WhatsappTemplate::where('is_active', true)
+        ->get()
+        ->map(function($template) {
+            return [
+                'id' => $template->id,
+                'name' => $template->name,
+                'content' => $template->content
+            ];
+        });
         return [
             'contacts' => $contacts,
             'messages' => $messages,
-            'selected_client' => $contacts[$selectedIndex]['cliente_data'] ?? null
+            'selected_client' => $contacts[$selectedIndex]['cliente_data'] ?? null,
+            'templates' => $templates
         ];
     }
 }

@@ -28,73 +28,45 @@
 </style>
 <style type="text/css" >
 
-#t1_8{left:97px;bottom:660px;letter-spacing:-6.94px;}
-#t2_8{left:97px;bottom:508px;letter-spacing:-6.94px;}
-#t3_8{left:97px;bottom:446px;letter-spacing:-0.02px;}
-#t4_8{left:97px;bottom:403px;letter-spacing:-0.02px;}
-#t5_8{left:97px;bottom:359px;letter-spacing:-0.02px;}
-#t6_8{left:97px;bottom:316px;letter-spacing:-0.02px;}
-#t7_8{left:1347px;bottom:871px;letter-spacing:-0.21px;}
-#t8_8{left:980px;bottom:871px;letter-spacing:-0.27px;}
-#t9_8{left:1708px;bottom:871px;letter-spacing:-0.23px;}
-#ta_8{left:1346px;bottom:841px;letter-spacing:-0.04px;}
-#tb_8{left:962px;bottom:841px;letter-spacing:-0.04px;}
-#tc_8{left:1730px;bottom:841px;letter-spacing:-0.04px;}
-#td_8{left:1352px;bottom:475px;letter-spacing:-0.25px;}
-#te_8{left:980px;bottom:475px;letter-spacing:-0.18px;}
-#tf_8{left:1722px;bottom:475px;letter-spacing:-0.22px;}
-#tg_8{left:1324px;bottom:446px;letter-spacing:-0.05px;}
-#th_8{left:993px;bottom:446px;letter-spacing:-0.05px;}
-#ti_8{left:1678px;bottom:446px;letter-spacing:-0.04px;}
-#tj_8{left:1353px;bottom:76px;letter-spacing:-0.28px;}
-#tk_8{left:964px;bottom:76px;letter-spacing:-0.2px;}
-#tl_8{left:1765px;bottom:76px;letter-spacing:-0.21px;}
-#tm_8{left:1377px;bottom:47px;letter-spacing:-0.05px;}
-#tn_8{left:969px;bottom:47px;letter-spacing:-0.04px;}
-#to_8{left:1756px;bottom:47px;letter-spacing:-0.05px;}
+#t1_8{left:770px;bottom:1083px;letter-spacing:0.06px;}
+#t2_8{left:212px;bottom:990px;letter-spacing:0.03px;word-spacing:0.03px;}
+#t3_8{left:258px;bottom:784px;letter-spacing:-0.09px;word-spacing:-0.02px;}
+#t4_8{left:258px;bottom:624px;letter-spacing:-0.24px;word-spacing:0.13px;}
+#t5_8{left:258px;bottom:460px;letter-spacing:-0.14px;word-spacing:0.03px;}
+#t6_8{left:258px;bottom:302px;letter-spacing:-0.22px;word-spacing:0.12px;}
+#t7_8{left:258px;bottom:142px;letter-spacing:-0.19px;word-spacing:0.08px;}
 
-.s0_8{font-size:139px;font-family:Poppins-Regular_bk;color:#FFF;}
-.s1_8{font-size:26px;font-family:Poppins-Regular_br;color:rgba(255,255,255,0.9);}
-.s2_8{font-size:31px;font-family:TTInterphases-Bold_bl;color:#FFF7E4;}
-.s3_8{font-size:23px;font-family:TTInterphases-Regular_bm;color:#FFF7E4;}
+.s0_8{font-size:61px;font-family:Poppins-SemiBold_ku;color:#FFF;}
+.s1_8{font-size:35px;font-family:IBMPlexSans_kv;color:#FFF;}
+.s2_8{font-size:43px;font-family:IBMPlexSans-Bold_kw;color:#000;}
 </style>
 <style id="fonts8" type="text/css" >
 
 @font-face {
-	font-family: Poppins-Regular_bk;
-	src: url("../fonts/Poppins-Regular_bk.woff") format("woff");
+	font-family: IBMPlexSans-Bold_kw;
+	src: url("../fonts/IBMPlexSans-Bold_kw.woff") format("woff");
 }
 
 @font-face {
-	font-family: Poppins-Regular_br;
-	src: url("../fonts/Poppins-Regular_br.woff") format("woff");
+	font-family: IBMPlexSans_kv;
+	src: url("../fonts/IBMPlexSans_kv.woff") format("woff");
 }
 
 @font-face {
-	font-family: TTInterphases-Bold_bl;
-	src: url("../fonts/TTInterphases-Bold_bl.woff") format("woff");
-}
-
-@font-face {
-	font-family: TTInterphases-Regular_bm;
-	src: url("../fonts/TTInterphases-Regular_bm.woff") format("woff");
+	font-family: Poppins-SemiBold_ku;
+	src: url("../fonts/Poppins-SemiBold_ku.woff") format("woff");
 }
 
 </style>
 <div id="pg8Overlay" style="width:100%; height:100%; position:absolute; z-index:1; background-color:rgba(0,0,0,0); -webkit-user-select: none;"></div>
 <div id="pg8" style="-webkit-user-select: none;"><object width="2200" height="1237" data="../8/8.svg" type="image/svg+xml" id="pdf8" style="width:2200px; height:1237px; z-index: 0;"></object></div>
-<div class="text-container"><span id="t1_8" class="t s0_8">Nuestros </span>
-<span id="t2_8" class="t s0_8">artistas </span>
-<span id="t3_8" class="t s1_8">Contamos con más de 30 artistas por toda España, </span>
-<span id="t4_8" class="t s1_8">con la capacidad de pinchar diferentes géneros, </span>
-<span id="t5_8" class="t s1_8">adaptarse a cada situación para hacer realidad el </span>
-<span id="t6_8" class="t s1_8">evento de tus sueños. </span>
-<span id="t7_8" class="t s2_8">Sergio S. </span><span id="t8_8" class="t s2_8">Ochoa </span><span id="t9_8" class="t s2_8">Alex Arecha </span>
-<span id="ta_8" class="t s3_8">Open format </span><span id="tb_8" class="t s3_8">Open format </span><span id="tc_8" class="t s3_8">Open format </span>
-<span id="td_8" class="t s2_8">Lourdes </span><span id="te_8" class="t s2_8">Víctor </span><span id="tf_8" class="t s2_8">Ricardo G. </span>
-<span id="tg_8" class="t s3_8">Remember y pop </span><span id="th_8" class="t s3_8">DJ MC </span><span id="ti_8" class="t s3_8">Reggaeton y comercial </span>
-<span id="tj_8" class="t s2_8">German </span><span id="tk_8" class="t s2_8">Álvaro F. </span><span id="tl_8" class="t s2_8">Luis </span>
-<span id="tm_8" class="t s3_8">House </span><span id="tn_8" class="t s3_8">Electrónica </span><span id="to_8" class="t s3_8">Techno </span></div>
+<div class="text-container"><span id="t1_8" class="t s0_8">Preguntas frecuentes </span>
+<span id="t2_8" class="t s1_8">Haz que tu evento sea todavía más especial con estas opciones opcionales. Añádelo fácilmente y despreocúpate. </span>
+<span id="t3_8" class="t s2_8">¿Puedo pedir canciones específicas? </span>
+<span id="t4_8" class="t s2_8">¿Qué pasa si el DJ no puede venir? </span>
+<span id="t5_8" class="t s2_8">¿Se puede ampliar el horario durante la fiesta? </span>
+<span id="t6_8" class="t s2_8">¿Hay costes ocultos o extras? </span>
+<span id="t7_8" class="t s2_8">¿Qué necesito preparar como anfitrión? </span></div>
 
 </div>
 </body>

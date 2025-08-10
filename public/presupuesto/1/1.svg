@@ -1,16 +1,19 @@
 <svg viewBox="0 0 2200 1237" version="1.1" xmlns="http://www.w3.org/2000/svg">
 <defs>
 <clipPath id="c0_1"><path d="M-.2 1237.8V-.2H2200.3v1238Z"/></clipPath>
+<clipPath id="c1_1"><path d="M855.5 907.7c-13.3 0-26-5.3-35.4-14.7c-9.4-9.4-14.7-22.1-14.7-35.4c0-13.3 5.3-26 14.7-35.4c9.4-9.4 22.1-14.7 35.4-14.7h412.9c13.2 0 26 5.3 35.4 14.7c9.4 9.4 14.7 22.1 14.7 35.4c0 13.3-5.3 26-14.7 35.4c-9.4 9.4-22.2 14.7-35.4 14.7Z"/></clipPath>
 <style>
 .g0_1{fill:#FFF;}
 .g1_1{fill:#121614;}
+.g2_1{fill:#DCE200;}
 </style>
 </defs>
 <g clip-path="url(#c0_1)">
 <path d="M0 0H2200V1237.5H0V0Z" class="g0_1"/>
 <path d="M0 0H2200V1237.5H0V0Z" class="g1_1"/>
 <g opacity="0.6">
-<image preserveAspectRatio="none" x="0" y="-115" width="2200" height="1468" href="img/1.jpg"/>
+<image preserveAspectRatio="none" x="0" y="-113" width="2200" height="1464" href="img/1.jpg"/>
 </g>
 </g>
+<path clip-path="url(#c1_1)" d="M805.4 807.5h513.2V907.7H805.4V807.5Z" class="g2_1"/>
 </svg>

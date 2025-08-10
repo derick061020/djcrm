@@ -115,6 +115,18 @@ Route::get('/presupuesto/{cliente}/9.html', function(Clientes $cliente) {
 })->name('presupuesto.page9')
 ->where('cliente', '[0-9]+');
 
+Route::get('/presupuesto/{cliente}/10.html', function(Clientes $cliente) {
+    $formato = Formatos::find($cliente->formato_evento);
+    return view('presupuesto.10', compact('cliente', 'formato'));
+})->name('presupuesto.page10')
+->where('cliente', '[0-9]+');
+
+Route::get('/presupuesto/{cliente}/11.html', function(Clientes $cliente) {
+    $formato = Formatos::find($cliente->formato_evento);
+    return view('presupuesto.11', compact('cliente', 'formato'));
+})->name('presupuesto.page11')
+->where('cliente', '[0-9]+');
+
 // Rutas para el presupuesto corporativo
 Route::get('/presupuestoCorporativo/{cliente}/index.html', function(Clientes $cliente) {
     $formato = Formatos::find($cliente->formato_evento);
