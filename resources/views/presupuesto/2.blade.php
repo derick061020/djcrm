@@ -83,9 +83,7 @@
     if (empty($referencias)) {
         echo 'Por confirmar';
     } else {
-        foreach ($referencias as $referencia) {
-            echo $referencia['referencia'].",\n";
-        }
+        echo $referencias;
     }
 @endphp</span>
 <span id="tb_2" class="t s4_2"></span>
