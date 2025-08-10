@@ -582,6 +582,10 @@ class ClientesResource extends Resource
             ->emptyStateHeading('No hay más formularios')
             ->emptyStateDescription('No hay formularios pendientes de revisión')
             ->columns([
+                TextColumn::make('id')
+                    ->label('Cliente')
+                    ->formatStateUsing(fn ($state) => '#' . str_pad($state, 4, '0', STR_PAD_LEFT))
+                    ->sortable(),
                 TextColumn::make('nombre')
                     ->label('Nombre')
                     ->searchable(),

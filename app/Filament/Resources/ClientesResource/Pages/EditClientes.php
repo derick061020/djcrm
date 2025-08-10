@@ -15,6 +15,11 @@ class EditClientes extends EditRecord
 
     public $templates = [];
     public $selectedTemplate = '';
+    
+    public function getTitle(): string | \Illuminate\Contracts\Support\Htmlable
+    {
+        return 'Cliente #' . str_pad($this->record->id, 4, '0', STR_PAD_LEFT);
+    }
 
     protected function getHeaderActions(): array
     {
