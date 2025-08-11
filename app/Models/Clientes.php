@@ -22,6 +22,7 @@ class Clientes extends Model
         'aprobado',
         'hora_inicio',
         'hora_fin',
+        'ubicacion_local',
         'budget_items',
         'seguimiento',
         'analytics',
