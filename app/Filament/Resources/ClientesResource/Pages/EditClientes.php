@@ -195,7 +195,7 @@ class EditClientes extends EditRecord
         
         return 'archivo';
     }
-    }
+    
 
     public $mensajes = [];
 
