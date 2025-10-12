@@ -16,10 +16,13 @@ use App\Models\Whatsapp;
     .chat-container {
         height: 100%;
         min-height: 500px;
+        max-height: 70vh;
         border-radius: 1rem;
         overflow: hidden;
         background: white;
         box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        display: flex;
+        flex-direction: column;
     }
 
     .chat-bubble {
@@ -97,7 +100,7 @@ use App\Models\Whatsapp;
 </style>
 
 <div class="chat-container flex flex-col">
-    <div class="flex-1 overflow-y-auto p-4" id="chat-container">
+    <div class="flex-1 overflow-y-auto p-4" id="chat-container" style="max-height: calc(70vh - 200px);">
         <div class="flex flex-col space-y-4">
             @if(isset($messages))
             @foreach($messages as $msg)
