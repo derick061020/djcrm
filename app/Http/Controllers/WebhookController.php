@@ -10,8 +10,14 @@ use App\Models\Whatsapp;
 class WebhookController extends Controller
 {
     private const WEBHOOK_VERIFY_TOKEN = 'HolaNovato';
-    private const GRAPH_API_TOKEN = 'EAAU9Ie8FTL0BPNoV5BB8tbCA0uuEaJz5A1mlCi4Kz4CGV4dcRdiIJ4pZATwqEikMCmMxyraJNjuNHKtC6MAqjnLagEFtX4G11KeTfs8uyK1uLwAaM3Fy0ds6g2dtM5TdDYGVyMfHMyurnHWy0pUMaiI3YYihjO3fpqKBjQzTRZCpU2LXb7ycVatNA2jrYbdlm5TZBi0lDpcT6usODE9wKDZChqavYkJ1v6ClO2PTSpeEVZCYZD';
-    private const BUSINESS_PHONE_NUMBER_ID = '656799494179884';
+    private string $graphApiToken;
+    private string $businessPhoneNumberId;
+
+    public function __construct()
+    {
+        $this->graphApiToken = env('WHATSAPP_API_TOKEN');
+        $this->businessPhoneNumberId = env('WHATSAPP_BUSINESS_PHONE_ID', '656799494179884');
+    }
 
     
     public function recibe(Request $request)
@@ -56,7 +62,7 @@ class WebhookController extends Controller
             // Marcar mensaje como leído
             $business_phone_number_id = $request->json('entry.0.changes.0.value.metadata.phone_number_id');
             Http::withHeaders([
-                'Authorization' => 'Bearer ' . self::GRAPH_API_TOKEN,
+                'Authorization' => 'Bearer ' . $this->graphApiToken,
             ])->post("https://graph.facebook.com/v22.0/{$business_phone_number_id}/messages",[
                     'messaging_product' => 'whatsapp',
                     'status' => 'read',

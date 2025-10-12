@@ -44,17 +44,20 @@ class EditClientes extends EditRecord
     }
     public function sendMessage()
     {
-        $url = "https://graph.facebook.com/v22.0/741797439008360/messages";
+        $phoneNumber = env('WHATSAPP_PHONE_NUMBER');
+        $whatsappToken = env('WHATSAPP_API_TOKEN');
+        
+        $url = "https://graph.facebook.com/v22.0/{$phoneNumber}/messages";
 
         $curl = curl_init($url);
         curl_setopt($curl, CURLOPT_URL, $url);
         curl_setopt($curl, CURLOPT_POST, true);
         curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
 
-        $headers = array(
+        $headers = [
             "Content-Type: application/json",
-            "Authorization: Bearer EAAU9Ie8FTL0BPNoV5BB8tbCA0uuEaJz5A1mlCi4Kz4CGV4dcRdiIJ4pZATwqEikMCmMxyraJNjuNHKtC6MAqjnLagEFtX4G11KeTfs8uyK1uLwAaM3Fy0ds6g2dtM5TdDYGVyMfHMyurnHWy0pUMaiI3YYihjO3fpqKBjQzTRZCpU2LXb7ycVatNA2jrYbdlm5TZBi0lDpcT6usODE9wKDZChqavYkJ1v6ClO2PTSpeEVZCYZD",
-        );
+            "Authorization: Bearer {$whatsappToken}",
+        ];
         curl_setopt($curl, CURLOPT_HTTPHEADER, $headers);
 
 
@@ -62,7 +65,7 @@ class EditClientes extends EditRecord
             {
             "messaging_product": "whatsapp",    
             "recipient_type": "individual",
-            "to": "{$this->record->contacto}",
+            "to": "+{$this->record->contacto}",
             "type": "text",
             "text": {
                 "preview_url": false,
