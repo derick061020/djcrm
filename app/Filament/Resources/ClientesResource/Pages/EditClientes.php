@@ -16,6 +16,10 @@ class EditClientes extends EditRecord
     public $templates = [];
     public $selectedTemplate = '';
     
+    protected $rules = [
+        'file' => 'nullable|file|max:10240', // 10MB max
+    ];
+    
     public function getTitle(): string | \Illuminate\Contracts\Support\Htmlable
     {
         return 'Cliente #' . str_pad($this->record->id, 4, '0', STR_PAD_LEFT);
@@ -42,11 +46,9 @@ class EditClientes extends EditRecord
             $this->message = str_replace('{{ nombre }}', $this->record->nombre, $template->content);
         }
     }
-    public function updatedFile($value)
+    public function updatedFile()
     {
-        $this->validate([
-            'file' => 'max:10240', // 10MB Max
-        ]);
+        $this->validateOnly('file');
     }
 
     public function sendMessage()
@@ -57,43 +59,41 @@ class EditClientes extends EditRecord
         $url = "https://graph.facebook.com/v22.0/{$phoneNumber}/messages";
 
         if ($this->file) {
-            // Manejar envío de archivo
-            $filePath = $this->file->store('whatsapp-files');
-            $fileUrl = asset('storage/' . $filePath);
+            // Guardar el archivo
+            $path = $this->file->store('whatsapp-files', 'public');
+            $fileUrl = asset('storage/' . $path);
+            
+            // Determinar el tipo de archivo
             $mimeType = $this->file->getMimeType();
-            $fileName = $this->file->getClientOriginalName();
-            $fileExtension = $this->file->getClientOriginalExtension();
+            $fileType = $this->getFileType($mimeType);
             
-            // Determinar el tipo de mensaje basado en el MIME type
-            $messageType = $this->getMessageType($mimeType);
-            
-            $data = [
-                'messaging_product' => 'whatsapp',
-                'recipient_type' => 'individual',
-                'to' => '+'.$this->record->contacto,
-                'type' => $messageType,
-                $messageType => [
-                    'link' => $fileUrl,
-                    'caption' => $this->message,
-                    'filename' => $fileName,
-                ]
-            ];
-            
+            // Crear mensaje para la base de datos
             $mensaje = [
-                'mensaje' => $fileName,
+                'mensaje' => $this->file->getClientOriginalName(),
                 'fecha' => now()->format('Y-m-d H:i:s'),
                 'tipo' => 'enviado',
                 'tipo_mensaje' => 'archivo',
                 'archivo' => [
-                    'tipo' => $this->getFileType($mimeType),
-                    'path' => $filePath,
+                    'tipo' => $fileType,
+                    'path' => $path,
                     'mime_type' => $mimeType,
-                    'nombre' => $fileName,
-                    'extension' => $fileExtension
+                    'nombre' => $this->file->getClientOriginalName()
+                ]
+            ];
+            
+            // Configurar datos para la API de WhatsApp
+            $data = [
+                'messaging_product' => 'whatsapp',
+                'recipient_type' => 'individual',
+                'to' => '+'.$this->record->contacto,
+                'type' => $fileType === 'document' ? 'document' : $fileType,
+                $fileType === 'document' ? 'document' : $fileType => [
+                    'link' => $fileUrl,
+                    'caption' => $this->message ?: null
                 ]
             ];
         } else {
-            // Manejar mensaje de texto normal
+            // Mensaje de texto normal
             $data = [
                 'messaging_product' => 'whatsapp',
                 'recipient_type' => 'individual',
@@ -114,22 +114,27 @@ class EditClientes extends EditRecord
         }
 
         $curl = curl_init($url);
-        curl_setopt($curl, CURLOPT_URL, $url);
-        curl_setopt($curl, CURLOPT_POST, true);
-        curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
-        curl_setopt($curl, CURLOPT_HTTPHEADER, [
-            "Content-Type: application/json",
-            "Authorization: Bearer {$whatsappToken}",
+        curl_setopt_array($curl, [
+            CURLOPT_URL => $url,
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_ENCODING => '',
+            CURLOPT_MAXREDIRS => 10,
+            CURLOPT_TIMEOUT => 0,
+            CURLOPT_FOLLOWLOCATION => true,
+            CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+            CURLOPT_CUSTOMREQUEST => 'POST',
+            CURLOPT_POSTFIELDS => json_encode($data),
+            CURLOPT_HTTPHEADER => [
+                'Authorization: Bearer ' . $whatsappToken,
+                'Content-Type: application/json'
+            ],
+            CURLOPT_SSL_VERIFYHOST => false,
+            CURLOPT_SSL_VERIFYPEER => false,
         ]);
-        curl_setopt($curl, CURLOPT_POSTFIELDS, json_encode($data));
-        
-        // Deshabilitar verificación SSL para desarrollo
-        curl_setopt($curl, CURLOPT_SSL_VERIFYHOST, false);
-        curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, false);
 
-        $resp = curl_exec($curl);
+        $response = curl_exec($curl);
         $httpCode = curl_getinfo($curl, CURLINFO_HTTP_CODE);
-        $response = json_decode($resp, true);
+        $error = curl_error($curl);
         curl_close($curl);
         
         if ($httpCode == 200) {
@@ -151,18 +156,19 @@ class EditClientes extends EditRecord
                 ->success()
                 ->send();
                 
-            // Limpiar los inputs
+            // Limpiar los campos
             $this->reset(['message', 'file']);
+            
         } else {
-            $errorMessage = $response['error']['message'] ?? 'Error al enviar el mensaje';
+            $errorMessage = json_decode($response, true)['error']['message'] ?? 'Error al enviar el mensaje';
             Notification::make()
                 ->title($errorMessage)
                 ->danger()
                 ->send();
         }
     }
-    
-    private function getMessageType($mimeType)
+
+    private function getFileType($mimeType)
     {
         if (str_starts_with($mimeType, 'image/')) {
             return 'image';
@@ -170,33 +176,11 @@ class EditClientes extends EditRecord
             return 'video';
         } elseif (str_starts_with($mimeType, 'audio/')) {
             return 'audio';
-        } elseif (in_array($mimeType, ['application/pdf', 'application/msword', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document', 'application/vnd.ms-excel', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'])) {
+        } else {
             return 'document';
         }
-        
-        return 'document'; // Por defecto
     }
     
-    private function getFileType($mimeType)
-    {
-        if (str_starts_with($mimeType, 'image/')) {
-            return 'imagen';
-        } elseif (str_starts_with($mimeType, 'video/')) {
-            return 'video';
-        } elseif (str_starts_with($mimeType, 'audio/')) {
-            return 'audio';
-        } elseif ($mimeType === 'application/pdf') {
-            return 'PDF';
-        } elseif (in_array($mimeType, ['application/msword', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'])) {
-            return 'Documento Word';
-        } elseif (in_array($mimeType, ['application/vnd.ms-excel', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'])) {
-            return 'Hoja de cálculo';
-        }
-        
-        return 'archivo';
-    }
-    
-
     public $mensajes = [];
 
     public function loadMessages()

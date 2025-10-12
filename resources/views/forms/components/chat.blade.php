@@ -156,30 +156,51 @@ use App\Models\Whatsapp;
 
 
     <div class="sticky bottom-0 bg-white dark:bg-gray-800 p-4 border-t dark:border-gray-700">
-        <div class="flex gap-2">
+        <form wire:submit.prevent="sendMessage">
+            <div class="flex gap-2">
+                <div class="relative">
+                    <input type="file" wire:model="file" id="fileInput" class="hidden">
+                    <label for="fileInput" class="flex items-center space-x-2 px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 cursor-pointer transition-colors">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-500 dark:text-gray-400" viewBox="0 0 20 20" fill="currentColor">
+                            <path fill-rule="evenodd" d="M3 17a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zM6.293 6.707a1 1 0 010-1.414l3-3a1 1 0 011.414 0l3 3a1 1 0 01-1.414 1.414L11 5.414V13a1 1 0 11-2 0V5.414L7.707 6.707a1 1 0 01-1.414 0z" clip-rule="evenodd" />
+                        </svg>
+                        <span class="text-sm text-gray-700 dark:text-gray-300">
+                            @if($file)
+                                {{ $file->getClientOriginalName() }}
+                            @else
+                                Archivo
+                            @endif
+                        </span>
+                    </label>
+                    @if($file)
+                        <button type="button" wire:click="$set('file', null)" class="absolute -top-2 -right-2 bg-red-500 text-white rounded-full w-5 h-5 flex items-center justify-center text-xs">
+                            ×
+                        </button>
+                    @endif
+                </div>
+                
+                <x-filament::input
+                    wire:model.live="message"
+                    placeholder="Escribe tu mensaje..."
+                    id="message"
+                    class="flex-1 rounded-lg command-input dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+                    color="primary"
+                />
+                
+                <x-filament::button
+                    type="submit"
+                    color="primary"
+                    wire:loading.attr="disabled"
+                >
+                    <span wire:loading.remove>Enviar</span>
+                    <span wire:loading>Enviando...</span>
+                </x-filament::button>
+            </div>
             
-            <input type="file" wire:model="file" id="fileInput" class="hidden">
-            <label for="fileInput" class="flex items-center space-x-2 px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 cursor-pointer">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-500" viewBox="0 0 20 20" fill="currentColor">
-                    <path fill-rule="evenodd" d="M3 17a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zM6.293 6.707a1 1 0 010-1.414l3-3a1 1 0 011.414 0l3 3a1 1 0 01-1.414 1.414L11 5.414V13a1 1 0 11-2 0V5.414L7.707 6.707a1 1 0 01-1.414 0z" clip-rule="evenodd" />
-                </svg>
-                <span class="text-sm text-gray-700">Archivo</span>
-            </label>
-            <x-filament::input
-                wire:model.live="message"
-                placeholder="Escribe tu mensaje..."
-                id="message"
-                class="flex-1 rounded-lg command-input"
-                color="primary"
-            />
-            <x-filament::button
-                color="primary"
-                wire:click="sendMessage()"
-            >
-                Enviar
-            </x-filament::button>
-           
-        </div>
+            @error('file')
+                <p class="mt-1 text-sm text-red-600 dark:text-red-400">{{ $message }}</p>
+            @enderror
+        </form>
     </div>
 
     
