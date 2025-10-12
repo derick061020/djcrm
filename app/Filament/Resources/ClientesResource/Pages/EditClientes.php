@@ -17,6 +17,12 @@ class EditClientes extends EditRecord
     public $selectedTemplate = '';
     public $isSendingFile = false;
     
+    public function mount($record): void
+    {
+        parent::mount($record);
+        $this->isSendingFile = false;
+    }
+    
     public function getTitle(): string | \Illuminate\Contracts\Support\Htmlable
     {
         return 'Cliente #' . str_pad($this->record->id, 4, '0', STR_PAD_LEFT);
