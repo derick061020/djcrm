@@ -116,7 +116,7 @@ class EditClientes extends EditRecord
             $whatsapp->update(['mensajes' => $mensajes]);
 
             Notification::make()
-                ->title($response)
+                ->title('Archivo enviado')
                 ->success()
                 ->send();
                 
