@@ -120,7 +120,7 @@ class EditClientes extends EditRecord
                 ->success()
                 ->send();
                 
-            $this->reset('file');
+            $this->file = null;
         } else {
             Notification::make()
                 ->title('Error al enviar el archivo')
