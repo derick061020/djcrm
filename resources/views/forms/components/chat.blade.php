@@ -158,7 +158,16 @@ use App\Models\Whatsapp;
     <div class="sticky bottom-0 bg-white dark:bg-gray-800 p-4 border-t dark:border-gray-700">
         <div class="flex gap-2">
             
-            <div x-data="{ fileName: '' }" class="relative">
+            <div x-data="{
+                fileName: '',
+                uploadProgress: 0,
+                isUploading: false,
+                init() {
+                    this.$wire.on('file-upload-progress', (event) => {
+                        this.uploadProgress = event.detail.progress;
+                    });
+                }
+            }" class="relative w-full">
                 <input 
                     type="file" 
                     id="fileInput" 
@@ -168,30 +177,64 @@ use App\Models\Whatsapp;
                         const file = $event.target.files[0];
                         if (file) {
                             fileName = file.name;
-                            $wire.set('sendingFile', true, false);
-                            $wire.upload('file', file, (success) => {
-                                if (success) {
-                                    $wire.call('sendFile');
+                            isUploading = true;
+                            uploadProgress = 0;
+                            
+                            $wire.upload(
+                                'file', 
+                                file, 
+                                (success) => {
+                                    if (success) {
+                                        $wire.call('sendFile').then(() => {
+                                            isUploading = false;
+                                            fileName = '';
+                                            $refs.fileInput.value = '';
+                                            uploadProgress = 0;
+                                        });
+                                    }
+                                },
+                                () => {
+                                    // Progress callback
+                                },
+                                (event) => {
+                                    // Progress event
+                                    this.$wire.emit('file-upload-progress', { 
+                                        progress: event.detail.progress 
+                                    });
                                 }
-                            });
+                            );
                         }
                     "
                 >
-                <label 
-                    for="fileInput" 
-                    class="flex items-center space-x-2 px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 cursor-pointer"
-                >
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-500" viewBox="0 0 20 20" fill="currentColor">
-                        <path fill-rule="evenodd" d="M3 17a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zM6.293 6.707a1 1 0 010-1.414l3-3a1 1 0 011.414 0l3 3a1 1 0 01-1.414 1.414L11 5.414V13a1 1 0 11-2 0V5.414L7.707 6.707a1 1 0 01-1.414 0z" clip-rule="evenodd" />
-                    </svg>
-                    <span x-text="fileName || 'Archivo'" class="text-sm text-gray-700"></span>
-                    <span wire:loading wire:target="file" class="ml-2">
-                        <svg class="animate-spin h-4 w-4 text-gray-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-                            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                <div class="relative">
+                    <div x-show="isUploading" class="absolute inset-0 bg-gray-200 rounded-lg overflow-hidden">
+                        <div 
+                            class="h-full bg-blue-500 transition-all duration-300 ease-in-out" 
+                            :style="`width: ${uploadProgress}%`"
+                        ></div>
+                    </div>
+                    <label 
+                        for="fileInput" 
+                        class="relative flex items-center space-x-2 px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 cursor-pointer bg-white"
+                        :class="{ 'opacity-75': isUploading }"
+                    >
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-500" viewBox="0 0 20 20" fill="currentColor">
+                            <path fill-rule="evenodd" d="M3 17a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zM6.293 6.707a1 1 0 010-1.414l3-3a1 1 0 011.414 0l3 3a1 1 0 01-1.414 1.414L11 5.414V13a1 1 0 11-2 0V5.414L7.707 6.707a1 1 0 01-1.414 0z" clip-rule="evenodd" />
                         </svg>
-                    </span>
-                </label>
+                        <span x-text="isUploading ? `Subiendo... ${Math.round(uploadProgress)}%` : (fileName || 'Archivo')" 
+                              class="text-sm text-gray-700">
+                        </span>
+                        <span x-show="isUploading" class="ml-2">
+                            <svg class="animate-spin h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                            </svg>
+                        </span>
+                    </label>
+                </div>
+                <div x-show="isUploading" class="mt-1 text-xs text-gray-500">
+                    <span x-text="`${Math.round(uploadProgress)}% completado`"></span>
+                </div>
             </div>
             <x-filament::input
                 wire:model.live="message"
